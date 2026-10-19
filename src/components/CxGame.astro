@@ -358,14 +358,10 @@ const payload = {
   .avatar-mini i { position: absolute; bottom: -4px; right: -4px; font-style: normal; font-family: var(--font-head); font-size: .62rem; font-weight: 700; background: var(--orange); color: #fff; padding: 2px 5px; border-radius: 6px; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
   .intro-rules { margin: 0; font-size: .85rem; color: #9fb0e8; }
-  /* Butoanele jocului — pătrate, ca toate butoanele site-ului (mărimea vine din --btn-size, global.css) */
-  .press-start, .stage :global(.next), .stage :global(.cta), .stage :global(.again) {
-    display: inline-flex; flex-direction: column; justify-content: center; align-items: center; flex: none;
-    width: var(--btn-size); height: var(--btn-size); padding: 8px; text-align: center; white-space: normal; line-height: 1.25;
-  }
+  /* Butoanele jocului au design propriu (rotunjite, stil arcade) — nu urmează regula butoanelor pătrate */
   .press-start {
-    margin-top: 4px; border: 0; cursor: pointer; border-radius: 0;
-    font-family: var(--font-head); font-weight: 700; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase;
+    margin-top: 4px; border: 0; cursor: pointer; padding: 14px 30px; border-radius: 999px;
+    font-family: var(--font-head); font-weight: 700; font-size: 1rem; letter-spacing: .14em; text-transform: uppercase;
     color: #1a0b00; background: linear-gradient(180deg, #ffd166, #f07a3c); box-shadow: 0 6px 0 #a3420f, 0 0 24px rgba(240,122,60,.55);
     animation: pulse 1.4s ease-in-out infinite;
   }
@@ -410,7 +406,7 @@ const payload = {
   .stage :global(.option) {
     position: relative; display: flex; flex-direction: column; gap: 8px; text-align: left; cursor: pointer;
     font: inherit; font-size: .84rem; line-height: 1.45; color: #e6ebff; padding: 12px 12px 14px;
-    background: rgba(255,255,255,.06); border: 2px solid rgba(255,255,255,.14); border-radius: 0;
+    background: rgba(255,255,255,.06); border: 2px solid rgba(255,255,255,.14); border-radius: 12px;
     transition: transform .12s, border-color .15s, background .15s;
   }
   .stage :global(.option:hover:not(:disabled)) { transform: translateY(-3px); border-color: var(--yellow); background: rgba(255,245,133,.08); }
@@ -431,7 +427,7 @@ const payload = {
   .stage :global(.fb-ok) { background: rgba(245,180,0,.15); } .stage :global(.fb-ok .verdict) { color: #ffd166; }
   .stage :global(.fb-bad), .stage :global(.fb-timeout) { background: rgba(232,70,58,.16); }
   .stage :global(.fb-bad .verdict), .stage :global(.fb-timeout .verdict) { color: #ff8a7f; }
-  .stage :global(.next) { border: 0; cursor: pointer; border-radius: 0; font-family: var(--font-head); font-weight: 700; font-size: .75rem; color: #1a0b00; background: linear-gradient(180deg, #ffd166, #f07a3c); box-shadow: 0 4px 0 #a3420f; }
+  .stage :global(.next) { flex: none; border: 0; cursor: pointer; padding: 10px 16px; border-radius: 8px; font-family: var(--font-head); font-weight: 700; font-size: .85rem; color: #1a0b00; background: linear-gradient(180deg, #ffd166, #f07a3c); box-shadow: 0 4px 0 #a3420f; }
   .stage :global(.next:active) { transform: translateY(3px); box-shadow: 0 1px 0 #a3420f; }
 
   /* Rezultat */
@@ -450,8 +446,8 @@ const payload = {
   .stage :global(.stat small) { font-size: .7rem; color: #9fb0e8; }
   .stage :global(.result-text) { font-size: .9rem; color: #c9d2f5; margin: 0 0 16px; }
   .stage :global(.actions) { display: flex; gap: 10px; flex-wrap: wrap; }
-  .stage :global(.cta) { text-decoration: none; border-radius: 0; font-family: var(--font-head); font-weight: 700; font-size: .8rem; color: #fff; background: var(--gradient-cta); }
-  .stage :global(.again) { cursor: pointer; border-radius: 0; font: inherit; font-family: var(--font-head); font-weight: 600; font-size: .8rem; color: #e6ebff; background: transparent; border: 1px solid rgba(255,255,255,.25); }
+  .stage :global(.cta) { text-decoration: none; padding: 12px 22px; border-radius: 999px; font-family: var(--font-head); font-weight: 700; color: #fff; background: var(--gradient-cta); }
+  .stage :global(.again) { cursor: pointer; padding: 12px 20px; border-radius: 999px; font: inherit; font-family: var(--font-head); font-weight: 600; color: #e6ebff; background: transparent; border: 1px solid rgba(255,255,255,.25); }
 
   .cabinet :global(.confetti) { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
   .cabinet :global(.confetti i) { position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; animation-name: fall; animation-timing-function: ease-in; animation-fill-mode: forwards; }
