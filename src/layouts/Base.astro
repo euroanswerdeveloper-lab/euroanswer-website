@@ -203,7 +203,7 @@ const services = t.serviceItems;
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         import('lenis').then(({ default: Lenis }) => {
           const lenis = new Lenis({
-            lerp: 0.1,            // cât de „moale” e derularea (mai mic = mai lin)
+            lerp: 0.16,           // cât de „moale” e derularea (mai mic = frânare mai lungă). 0.1 → 0.16 = oprire cu ~40% mai rapidă
             wheelMultiplier: 1,
             anchors: { offset: -90 }, // linkurile #ancoră derulează lin și lasă loc pentru meniul fix
             prevent: (node: HTMLElement) => !!node.closest('.lang-dd ul, .track'), // listele/sliderele derulează normal
