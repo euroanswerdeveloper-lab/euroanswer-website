@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import 'lenis/dist/lenis.css';
 import { Image } from 'astro:assets';
 import logo from '../assets/home/logo.jpg';
 import { ui, homeUrl, type Lang } from '../i18n/ui';
@@ -196,6 +197,21 @@ const services = t.serviceItems;
         const open = header?.classList.toggle('open');
         toggle.setAttribute('aria-expanded', String(open));
       });
+
+      // Derulare lină (Lenis) — doar pe desktop (mouse/touchpad); pe telefon rămâne derularea nativă.
+      // Dezactivată pentru vizitatorii care au setat „mai puțină mișcare” în sistem.
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        import('lenis').then(({ default: Lenis }) => {
+          const lenis = new Lenis({
+            lerp: 0.1,            // cât de „moale” e derularea (mai mic = mai lin)
+            wheelMultiplier: 1,
+            anchors: { offset: -90 }, // linkurile #ancoră derulează lin și lasă loc pentru meniul fix
+            prevent: (node: HTMLElement) => !!node.closest('.lang-dd ul, .track'), // listele/sliderele derulează normal
+          });
+          const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf); };
+          requestAnimationFrame(raf);
+        });
+      }
 
       // Lista de limbi se închide la click în afara ei sau la Escape
       const langDd = document.querySelector<HTMLDetailsElement>('.lang-dd');

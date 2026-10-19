@@ -19,8 +19,10 @@
 
 * { box-sizing: border-box; }
 
+/* Derularea lină e făcută de Lenis (vezi Base.astro); scroll-behavior: smooth ar intra în conflict cu ea.
+   Rămâne doar ca rezervă pentru browserele fără JavaScript. */
 @media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
+  html:not(.lenis) { scroll-behavior: smooth; }
 }
 
 body {
