@@ -387,8 +387,16 @@ const payload = {
   .stage :global(.chip) { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; padding: 2px 8px; border-radius: 99px; background: rgba(255,255,255,.1); color: #c9d2f5; }
   .stage :global(.bubble) { background: #fff; color: var(--text); border-radius: 4px 14px 14px 14px; padding: 10px 14px; }
   .stage :global(.original) { margin: 0; font-weight: 600; color: var(--navy); font-size: .98rem; }
-  .stage :global(.translation) { margin: 6px 0 0; font-size: .82rem; color: var(--muted); }
-  .stage :global(.ai) { font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--indigo); background: #e8e4ff; padding: 2px 5px; border-radius: 4px; }
+  /* Traducerea AI — bloc separat, bine contrastat */
+  .stage :global(.translation) {
+    margin: 10px 0 0; padding: 8px 12px; font-size: .92rem; line-height: 1.5; color: #1d2433;
+    background: #eeebff; border-left: 3px solid var(--indigo);
+  }
+  .stage :global(.ai) {
+    display: inline-block; margin-right: 6px; padding: 2px 7px; vertical-align: 1px;
+    font-family: var(--font-head); font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #fff; background: var(--indigo);
+  }
 
   .stage :global(.patience) { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; margin-bottom: 14px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #9fb0e8; font-family: var(--font-head); }
   .stage :global(.patience-track) { height: 10px; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; }
