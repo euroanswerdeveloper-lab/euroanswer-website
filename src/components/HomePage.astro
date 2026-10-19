@@ -1,0 +1,381 @@
+---
+// Pagina Home, comună pentru EN / DE / RU. Textele sunt în src/i18n/home.ts.
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ServiceCards from './ServiceCards.astro';
+import Testimonials from './Testimonials.astro';
+import CxGame from './CxGame.astro';
+import { homeText, centres as getCentres } from '../i18n/home';
+import { homeUrl, type Lang } from '../i18n/ui';
+import heroBg from '../assets/home/hero-bg.png';
+import cxOrbit from '../assets/home/cx-orbit.png';
+import pillarApproach from '../assets/home/pillar-approach.png';
+import pillarPeople from '../assets/home/pillar-people.png';
+import pillarPerformance from '../assets/home/pillar-performance.png';
+import iasBadge from '../assets/home/ias-badge.png';
+import aiTech from '../assets/home/ai-tech.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = homeText[lang];
+const centres = getCentres(lang);
+const pillarImgs = [pillarApproach, pillarPeople, pillarPerformance];
+const statIcons = ['trophy', 'chat', 'plane', 'handshake']; // ani · limbi · țări · centre
+const hero = await getImage({ src: heroBg, format: 'webp', width: 2000 });
+
+// Întrebări frecvente trimise către Google/AI ca FAQPage, în limba paginii
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: lang,
+  mainEntity: t.faq.items.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<Base title={t.meta.title} description={t.meta.description} lang={lang} alternates={homeUrl}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- HERO -->
+  <section class="hero" style={`background-image:url(${hero.src})`}>
+    <div class="container hero-grid">
+      <div>
+        <p class="hero-eyebrow">{t.hero.eyebrow}</p>
+        <h1>{t.hero.h1}</h1>
+        <p class="hero-tagline">{t.hero.tagline}</p>
+        <p class="hero-lead">{t.hero.lead}</p>
+        <div class="hero-actions">
+          <a href={t.links.contact} class="btn btn-primary">{t.hero.cta1}</a>
+          <a href={t.links.services} class="btn btn-outline">{t.hero.cta2}</a>
+        </div>
+      </div>
+      <Image src={cxOrbit} alt={t.hero.imgAlt} class="hero-img" loading="eager" />
+    </div>
+  </section>
+
+  <!-- SUMMARY (fraze clare, ușor de citat de Google și AI) -->
+  <section class="summary">
+    <div class="container summary-grid">
+      <p set:html={t.summary} />
+      <a href="#cx-game" class="btn btn-game"><img src="/game/icons/joystick.svg" alt="" width="22" height="22" /> {t.hero.cta3}</a>
+    </div>
+  </section>
+
+  <!-- ABOUT + PILLARS -->
+  <section class="section">
+    <div class="container about-grid">
+      <div>
+        <p class="eyebrow">{t.about.eyebrow}</p>
+        <h2 class="about-title" set:html={t.about.title} />
+        <p class="lead" set:html={t.about.p1} />
+        <p class="lead" set:html={t.about.p2} />
+      </div>
+      <div class="pillars">
+        {t.pillars.map((p, i) => (
+          <div class="pillar">
+            <Image src={pillarImgs[i]} alt="" width={72} height={72} />
+            <div>
+              <p class="pillar-label">{p.label}</p>
+              <p class="pillar-text"><strong>{p.title}</strong> — {p.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS (numărătoare animată — valorile finale rămân în HTML pentru SEO / fără JS) -->
+  <section class="stats-wrap">
+    <div class="container stats">
+      {t.stats.map((s, i) => (
+        <div class="stat" style={`--i:${i}`}>
+          <img class="stat-icon" src={`/game/icons/${statIcons[i]}.svg`} alt="" width="44" height="44" loading="lazy" />
+          <span class="stat-value" data-count={s.value}>{s.value}</span>
+          <span class="stat-bar" aria-hidden="true"><i></i></span>
+          <span class="stat-label">{s.label}{'note' in s && <em>{s.note}</em>}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- MINI-GAME -->
+  <CxGame lang={lang} />
+
+  <!-- SERVICES -->
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">{t.services.eyebrow}</p>
+      <h2 class="section-title">{t.services.title}</h2>
+      <p class="manifesto" set:html={t.services.manifesto} />
+      <ServiceCards lang={lang} />
+    </div>
+  </section>
+
+  <!-- INDUSTRIES & RESULTS -->
+  <section class="section section-soft" id="industries">
+    <div class="container">
+      <p class="eyebrow">{t.industries.eyebrow}</p>
+      <h2 class="section-title">{t.industries.title}</h2>
+      <p class="intro">{t.industries.intro}</p>
+      <div class="industries">
+        {t.industries.items.map((i) => (
+          <a class="industry" href={i.href}>
+            <h3>{i.name}</h3>
+            <p>{i.result}</p>
+            <span>{t.industries.more}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- NEARSHORE -->
+  <section class="section">
+    <div class="container nearshore-grid">
+      <div>
+        <p class="eyebrow">{t.nearshore.eyebrow}</p>
+        <h2 class="section-title">{t.nearshore.title}</h2>
+        <p set:html={t.nearshore.intro} />
+      </div>
+      <div class="nearshore">
+        {t.nearshore.items.map((n) => (
+          <div>
+            <h3>{n.title}</h3>
+            <p>{n.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY CENTRES -->
+  <section class="section section-soft" id="centres">
+    <div class="container">
+      <p class="eyebrow">{t.centres.eyebrow}</p>
+      <h2 class="section-title">{t.centres.title}</h2>
+      <p class="intro">{t.centres.intro}</p>
+      <div class="centres">
+        {centres.map((c) => (
+          <div class="centre" style={`--accent:${c.color}`}>
+            <h3>{c.city}</h3>
+            <p class="centre-meta"><strong>{c.agents} {t.centres.agents}</strong> · <strong>{c.languages} {t.centres.languages}</strong></p>
+            <p class="centre-langs">{c.list}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPLIANCE -->
+  <section class="section compliance">
+    <div class="container compliance-grid">
+      <div>
+        <p class="eyebrow">{t.compliance.eyebrow}</p>
+        <h2 class="compliance-title">{t.compliance.title}</h2>
+        <p set:html={t.compliance.text} />
+      </div>
+      <Image src={iasBadge} alt={t.compliance.imgAlt} width={520} />
+    </div>
+  </section>
+
+  <!-- AI TECH -->
+  <section class="section section-soft">
+    <div class="container tech-grid">
+      <div>
+        <p class="eyebrow">{t.tech.eyebrow}</p>
+        <h2 class="tech-title">{t.tech.title}</h2>
+        <a href={t.tech.href} class="btn btn-dark">{t.tech.cta}</a>
+      </div>
+      <Image src={aiTech} alt={t.tech.imgAlt} width={800} />
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <Testimonials lang={lang} />
+
+  <!-- FAQ -->
+  <section class="section section-soft">
+    <div class="container">
+      <p class="eyebrow">{t.faq.eyebrow}</p>
+      <h2 class="section-title">{t.faq.title}</h2>
+      <div class="faq">
+        {t.faq.items.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>{t.cta.title}</h2>
+      <p>{t.cta.text}</p>
+      <a href={t.links.contact} class="btn btn-light">{t.cta.button}</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Numărătoare crescătoare pentru cifrele din secțiunea de statistici
+  const stats = document.querySelector<HTMLElement>('.stats');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (stats && !reduced && 'IntersectionObserver' in window) {
+    const items = [...stats.querySelectorAll<HTMLElement>('[data-count]')].map((el) => {
+      const m = (el.dataset.count ?? '').match(/^(\D*)(\d+)(.*)$/);
+      return m ? { el, prefix: m[1], target: Number(m[2]), suffix: m[3] } : null;
+    }).filter(Boolean) as { el: HTMLElement; prefix: string; target: number; suffix: string }[];
+
+    const show = (it: (typeof items)[number], n: number) => (it.el.textContent = `${it.prefix}${n}${it.suffix}`);
+    const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+
+    // Pornim de la 0 doar dacă secțiunea nu e deja vizibilă (altfel lăsăm cifrele finale)
+    const rect = stats.getBoundingClientRect();
+    if (rect.top > window.innerHeight) {
+      stats.classList.add('is-waiting');
+      items.forEach((it) => show(it, 0));
+
+      const io = new IntersectionObserver((entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        stats.classList.remove('is-waiting');
+        stats.classList.add('is-counting');
+        items.forEach((it, i) => {
+          const duration = 1800, delay = i * 120;
+          const start = performance.now() + delay;
+          const tick = (now: number) => {
+            const p = Math.min(1, Math.max(0, (now - start) / duration));
+            show(it, Math.round(easeOut(p) * it.target));
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+      }, { threshold: 0.35 });
+      io.observe(stats);
+    }
+  }
+</script>
+
+<style>
+  .hero { background-color: var(--navy); background-size: cover; background-position: center right; color: #fff; padding: 96px 0; }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+  .hero-eyebrow { color: var(--yellow); font-family: var(--font-head); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: .85rem; margin: 0 0 16px; }
+  .hero h1 { color: #fff; font-size: clamp(2.2rem, 4.4vw, 3.4rem); margin: 0 0 16px; }
+  .hero-tagline { color: #fff; font-family: var(--font-head); font-size: 1.35rem; font-weight: 500; margin: 0 0 16px; }
+  .hero-lead { color: #f2ec6e; font-size: 1.15rem; margin: 0 0 36px; max-width: 560px; }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-game { color: #1a0b00; background: linear-gradient(180deg, #fff585, #ffd166); border-radius: 999px; box-shadow: 0 4px 0 #b8860b, 0 0 18px rgba(255, 245, 133, .35); }
+  .btn-game img { animation: wiggle 2.4s ease-in-out infinite; }
+  .btn-game:hover { opacity: 1; filter: brightness(1.06); }
+  .btn-game:active { transform: translateY(3px); box-shadow: 0 1px 0 #b8860b; }
+  @keyframes wiggle { 0%, 80%, 100% { transform: rotate(0); } 85% { transform: rotate(-14deg); } 90% { transform: rotate(12deg); } 95% { transform: rotate(-6deg); } }
+  @media (prefers-reduced-motion: reduce) { .btn-game img { animation: none; } }
+  .hero-img { width: 100%; height: auto; }
+
+  .summary { background: var(--navy-2); color: #dbe2f5; padding: 28px 0; }
+  .summary-grid { display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+  .summary p { margin: 0; max-width: 900px; font-size: 1.05rem; }
+  .summary .btn-game { flex: none; white-space: nowrap; color: #000; }
+  @media (max-width: 900px) {
+    .summary-grid { flex-direction: column; align-items: flex-start; gap: 18px; }
+  }
+  .summary :global(strong) { color: #fff; }
+  .summary :global(a) { color: var(--yellow); }
+
+  .about-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 56px; align-items: center; }
+  .about-title { font-size: clamp(1.8rem, 3vw, 2.5rem); color: #0b008a; font-weight: 500; margin: 0 0 24px; }
+  .lead { font-size: 1.1rem; }
+  .pillars { display: grid; gap: 28px; }
+  .pillar { display: grid; grid-template-columns: 72px 1fr; gap: 16px; align-items: start; }
+  .pillar img { width: 72px; height: 72px; }
+  .pillar-label { font-family: var(--font-head); font-size: .8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+  .pillar-text { margin: 0; font-family: var(--font-head); color: var(--navy); }
+
+  .stats-wrap {
+    padding: 56px 0; position: relative; overflow: hidden; color: #dbe2f5;
+    background: radial-gradient(circle at 12% 20%, rgba(40,116,252,.35), transparent 45%), radial-gradient(circle at 88% 80%, rgba(240,122,60,.28), transparent 45%), var(--navy);
+  }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; position: relative; }
+  .stat {
+    position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
+    padding: 28px 20px 24px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(6px); transition: transform .25s, border-color .25s, background .25s;
+  }
+  .stat:hover { transform: translateY(-4px); border-color: rgba(255,209,102,.5); background: rgba(255,255,255,.09); }
+  .stat-icon { width: 44px; height: 44px; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+  .stat-value {
+    font-family: var(--font-head); font-size: clamp(2.6rem, 4.4vw, 3.6rem); font-weight: 800; line-height: 1;
+    background: linear-gradient(180deg, #fff585 0%, #f7a35c 60%, #f07a3c 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-bar { width: 56px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; }
+  .stat-bar i { display: block; height: 100%; width: 100%; background: var(--gradient-cta); transform-origin: left; }
+  .stat-label { font-family: var(--font-head); font-size: .82rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #fff; }
+  .stat-label em { display: block; font-style: normal; color: var(--yellow); font-size: .72rem; margin-top: 2px; letter-spacing: .08em; }
+
+  /* Starea „înainte de animație” — aplicată de script doar dacă animația rulează */
+  .stats.is-waiting .stat { opacity: 0; transform: translateY(16px); }
+  .stats.is-waiting .stat-bar i { transform: scaleX(0); }
+  .stats.is-counting .stat { animation: statIn .6s ease-out both; animation-delay: calc(var(--i) * 120ms); }
+  .stats.is-counting .stat-bar i { animation: barFill 1.8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * 120ms); }
+  @keyframes statIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes barFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  .section-title { font-size: clamp(2rem, 3.5vw, 2.6rem); color: #005180; margin: 0 0 20px; }
+  .intro { max-width: 800px; margin: 0 0 32px; font-size: 1.08rem; }
+  .manifesto { font-size: 1.15rem; max-width: 900px; margin: 0 0 40px; }
+
+  .industries { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .industry { display: flex; flex-direction: column; background: #fff; padding: 24px; text-decoration: none; color: var(--text); border-top: 3px solid var(--indigo); transition: transform .2s, box-shadow .2s; }
+  .industry:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(7, 16, 52, .08); }
+  .industry h3 { margin: 0 0 8px; font-size: 1.1rem; }
+  .industry p { margin: 0 0 16px; font-size: .93rem; color: var(--muted); flex: 1; }
+  .industry span { font-family: var(--font-head); font-weight: 600; font-size: .88rem; color: var(--indigo); }
+
+  .nearshore-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 56px; align-items: start; }
+  .nearshore { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .nearshore div { border-left: 3px solid var(--orange); padding: 4px 0 4px 20px; }
+  .nearshore h3 { margin: 0 0 6px; font-size: 1.1rem; }
+  .nearshore p { margin: 0; font-size: .97rem; color: var(--muted); }
+
+  .centres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .centre { border-top: 4px solid var(--accent); background: #fff; padding: 28px; }
+  .centre h3 { color: var(--accent); font-size: 1.8rem; margin: 0 0 8px; }
+  .centre-meta { color: var(--indigo); font-family: var(--font-head); margin: 0 0 12px; }
+  .centre-langs { color: var(--muted); margin: 0; font-size: .95rem; }
+
+  .compliance { padding: 64px 0; }
+  .compliance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .compliance-title { font-size: 1.6rem; margin: 0 0 12px; }
+
+  .tech-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; align-items: center; }
+  .tech-title { font-size: 1.4rem; font-weight: 500; margin: 0 0 28px; }
+  .tech-grid img { width: 100%; height: auto; }
+
+  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  .faq details { background: #fff; border: 1px solid var(--border); padding: 18px 22px; }
+  .faq summary { font-family: var(--font-head); font-weight: 600; color: var(--navy); cursor: pointer; }
+  .faq details p { margin: 12px 0 0; color: var(--muted); }
+
+  .final-cta { background: var(--gradient-cta); color: #fff; text-align: center; padding: 72px 0; }
+  .final-cta h2 { color: #fff; font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 12px; }
+  .final-cta p { margin: 0 0 28px; font-size: 1.1rem; }
+
+  @media (max-width: 1000px) {
+    .industries { grid-template-columns: repeat(2, 1fr); }
+    .nearshore-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 900px) {
+    .hero { padding: 64px 0; }
+    .hero-grid, .about-grid, .compliance-grid, .tech-grid { grid-template-columns: 1fr; gap: 32px; }
+    .hero-img { max-width: 420px; }
+    .stats { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat { padding: 22px 14px 18px; }
+    .centres, .faq { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .industries, .nearshore { grid-template-columns: 1fr; }
+  }
+</style>

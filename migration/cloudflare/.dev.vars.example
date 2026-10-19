@@ -1,0 +1,14 @@
+# Copiază acest fișier ca .dev.vars pentru teste locale. În producție, setează valorile în
+# Cloudflare Dashboard → Workers & Pages → euroanswer → Settings → Variables and Secrets.
+
+# Cheia secretă Turnstile (cea de mai jos e cheia de TEST oficială — trece mereu)
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+# Cheia API de la resend.com (fără ea, local, mesajele doar se afișează în consolă)
+# RESEND_API_KEY=re_xxxxxxxx
+
+# Unde ajung mesajele (mai multe adrese separate prin virgulă)
+CONTACT_TO=sales@euroanswer.co.uk
+
+# Expeditorul — trebuie să fie pe un domeniu verificat în Resend
+CONTACT_FROM=Euroanswer Website <website@euroanswer.co.uk>

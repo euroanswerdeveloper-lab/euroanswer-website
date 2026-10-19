@@ -1,0 +1,32 @@
+# Redirecturi permanente (301) — citite de Cloudflare la deploy
+# Format: /url-vechi  /url-nou  301
+
+# Servicii comasate în cele două categorii
+/customer-experience/         /customer-service-outsourcing/                     301
+/it-outsourcing-solutions/    /customer-service-outsourcing/#technical-support   301
+/technical-support/           /customer-service-outsourcing/#technical-support   301
+/customer-support/            /customer-service-outsourcing/                     301
+/outstaffing/                 /staffing-services/#outstaffing                    301
+
+# Portfolio — pagina a fost scoasă; industriile sunt pe Home, iar subpaginile au adrese proprii
+/portfolio/                              /#industries                       301
+/portfolio/technology-printing/          /technology/                       301
+/portfolio/banking/                      /banking-outsourcing-services/     301
+/portfolio/gaming/                       /gaming/                           301
+/portfolio/education/                    /education/                        301
+/portfolio/rent-a-car-online-services/   /rent-a-car-online-services/       301
+/portfolio/personal-advertising/         /outsourcing-advertising/          301
+/portfolio/digital-printing/             /digital-printing-outsourcing/     301
+/portfolio/financial/                    /financial/                        301
+/portfolio/*                             /#industries                       301
+
+# Arhive WordPress care nu mai există
+/category/case-study/         /insights/                                         301
+/category/*                 /blog/                                             301
+/de/category/*                /blog/                                             301
+/tag/*                        /blog/                                             301
+/author/*                     /blog/                                             301
+/de/test/                     /de/business-process-outsourcing/                  301
+/feed/                        /blog/                                             301
+/wp-admin/*                   /                                                  301
+/wp-login.php                 /                                                  301

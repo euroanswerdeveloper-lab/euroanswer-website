@@ -1,0 +1,227 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import heroBg from '../assets/home/hero-bg.png';
+import iasBadge from '../assets/home/ias-badge.png';
+import { team, milestones } from '../data/team';
+
+const hero = await getImage({ src: heroBg, format: 'webp', width: 2000 });
+const ceo = team[0];
+---
+
+<Base
+  title="About Us — Euroanswer | Boutique BPO since 2004"
+  description="Meet Euroanswer: a boutique BPO company founded in 2004 by CEO Marian Raianu, with multilingual delivery centres in Bucharest, Galati and Skopje."
+>
+  <!-- HERO -->
+  <section class="page-hero" style={`background-image:url(${hero.src})`}>
+    <div class="container">
+      <p class="eyebrow">About Euroanswer</p>
+      <h1>Deliver globally. Talk locally.</h1>
+      <p>Since 2004 we have been helping international brands look after their customers — combining Western standards with an Eastern ethos, and multilingual people with smart technology.</p>
+      <a href="/contact/" class="btn btn-primary">Work with us</a>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="section">
+    <div class="container story">
+      <div>
+        <p class="eyebrow">Our manifesto</p>
+        <h2>Business to business. People to people.</h2>
+        <p>We provide customer experience through hubs of operational excellence and diverse cultural proficiency. Our dialogue is corporate to corporate, yet our service attests to individuals with distinct needs.</p>
+        <p>In our corporate DNA, we fuse Western benchmarks with an Eastern ethos. We are skilled in technology, cosmopolitan in behaviour, and dedicated to driving performance in global customer service outsourcing.</p>
+        <p>In safeguarding our clients’ reputations, we embody a rare skill — <strong>the ability to swiftly turn a challenge into a resolution.</strong></p>
+      </div>
+      <ul class="facts">
+        <li><strong>2004</strong><span>Founded</span></li>
+        <li><strong>20+</strong><span>Languages</span></li>
+        <li><strong>40</strong><span>Countries supported</span></li>
+        <li><strong>ISO</strong><span>9001 & 27001 certified</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CEO -->
+  <section class="section section-soft">
+    <div class="container ceo">
+      <img src="/wp-content/uploads/2023/09/Foto-founders-memo.png" alt="Marian Raianu, CEO & Founder of Euroanswer" width="420" loading="lazy" />
+      <div>
+        <p class="eyebrow">Founder’s memo</p>
+        <blockquote>
+          “It is in our very nature to talk business to business, while serving people as individuals. Reliantly expert in emerging and established markets, we dive deep into the culture-of-place to achieve customer service excellence.”
+        </blockquote>
+        <p class="sign"><strong>{ceo.name}</strong> — {ceo.role}</p>
+        <p>As founder and CEO, Marian shapes Euroanswer’s vision of a boutique BPO partner: multilingual, technology-driven and deeply human. In 2025 he led the company’s strategic expansion into Central Asia with a new delivery hub in Tashkent, Uzbekistan.</p>
+        <p class="vision">“This move into Uzbekistan is more than just growth; it’s a deep commitment to excellence and innovation that’s going to redefine what we can do globally.”</p>
+        <a href={ceo.linkedin} target="_blank" rel="noopener" class="linkedin">Connect with Marian on LinkedIn →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Key people</p>
+      <h2 class="section-title">The team behind Euroanswer</h2>
+      <p class="intro">Top-tier professionals rooted in their local markets, with a clear view of the global picture. Our values are <strong>trust, respect, partnership, effective collaboration and efficiency</strong>.</p>
+      <div class="team">
+        {team.map((m) => (
+          <figure>
+            <img src={m.photo} alt={`${m.name}, ${m.role}`} loading="lazy" />
+            <figcaption class="sr-only">{m.name} — {m.role}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="team-link"><a href="/join-the-team/">Want to join them? See careers at Euroanswer →</a></p>
+    </div>
+  </section>
+
+  <!-- MILESTONES -->
+  <section class="section section-soft">
+    <div class="container">
+      <p class="eyebrow">Our journey</p>
+      <h2 class="section-title">Company milestones</h2>
+      <ol class="timeline">
+        {milestones.map((m) => (
+          <li><span class="year">{m.year}</span><span>{m.text}</span></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- DIVERSITY -->
+  <section class="section">
+    <div class="container diversity">
+      <div>
+        <p class="eyebrow">Diversity & inclusion</p>
+        <h2>A place where everyone can learn, grow and succeed</h2>
+        <p>Fairness and welcoming everyone are key to how we build our company. We cultivate inclusion, accommodate diversity, and give every colleague the chance to improve and do well.</p>
+      </div>
+      <ul class="split">
+        <li><strong>60%</strong><span>women in top management</span></li>
+        <li><strong>75%</strong><span>women in middle management</span></li>
+        <li><strong>66.6%</strong><span>women across all management</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- QUALITY POLICY (text oficial, semnat de CEO — linkat din footer ca /about-us/#quality-policy) -->
+  <section class="section section-soft" id="quality-policy">
+    <div class="container">
+      <div class="qp-head">
+        <div>
+          <p class="eyebrow">Quality policy</p>
+          <h2 class="section-title">Our Quality Policy</h2>
+          <p class="qp-lead">Centred around providing an exceptional customer experience.</p>
+          <p>Our quality policy is centred around providing an exceptional customer experience. We strive to treat all our Clients with the same level of care and respect that we would wish to receive ourselves. Additionally, by acting with a sense of urgency, we aim to provide the best and most timely solutions possible.</p>
+        </div>
+        <Image src={iasBadge} alt="IAS, IAF and APAC accreditation marks for Euroanswer ISO 9001 and ISO/IEC 27001 certification" width={480} />
+      </div>
+
+      <div class="commitments">
+        <article>
+          <h3>Commitment to Quality</h3>
+          <p>We are committed to maintaining a high level of quality at Euroanswer. We actively listen to our Clients and strive to offer tailored services that meet their specific needs. Our team of dedicated professionals understands and practices our quality standards by setting examples of accountability, a learning mindset, and a positive attitude, while keeping their focus on our main purpose: service excellence for happy Clients who would be ready to recommend our company.</p>
+          <p class="signed">CEO Marian Raianu</p>
+        </article>
+        <article>
+          <h3>Commitment to Security</h3>
+          <p>At Euroanswer, we place a strong emphasis on maintaining a robust information security policy. We believe that by adhering to security standards and ensuring the integrity, confidentiality, and availability of information, we can build trust with our Clients and maintain a secure environment within and outside of the organization. This is essential to fulfilling our mission as a company.</p>
+          <p class="signed">CEO Marian Raianu</p>
+        </article>
+      </div>
+
+      <ul class="cia">
+        <li><strong>Confidentiality</strong> – preserving authorized restrictions on access and disclosure, including means for protecting personal data/privacy and proprietary information, while data is at rest, in use, or in transit.</li>
+        <li><strong>Integrity</strong> – guarding against improper information modification and destruction and includes ensuring information non-repudiation and authenticity. Unauthorized personnel must not be able to create, alter, copy, or delete data processed, stored, or handled by the system.</li>
+        <li><strong>Availability</strong> – ensuring timely and reliable access to, and use of information.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SUSTAINABILITY -->
+  <section class="section sustainability">
+    <div class="container">
+      <p class="eyebrow">Sustainability</p>
+      <p class="sus-text">Sustainability is a duty we honour daily. We look for innovative ways to use resources efficiently, and encourage our people to act as guardians of the environment through recycling initiatives, energy-saving practices and environmental awareness schemes — including our move to co-working hubs and a smaller office footprint.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Let’s talk about your customers</h2>
+      <p>Tell us what you need — we’ll build a personalised proposal.</p>
+      <a href="/contact/" class="btn btn-light">Contact us</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .section-title { font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 16px; }
+  .intro { max-width: 760px; margin: 0 0 40px; font-size: 1.08rem; }
+
+  .story { display: grid; grid-template-columns: 1.6fr 1fr; gap: 64px; align-items: center; }
+  .story h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 20px; }
+  .facts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .facts li { background: var(--bg-soft); padding: 24px; border-left: 3px solid var(--orange); }
+  .facts strong { display: block; font-family: var(--font-head); font-size: 2.2rem; color: var(--indigo); line-height: 1.1; }
+  .facts span { font-size: .9rem; color: var(--muted); }
+
+  .ceo { display: grid; grid-template-columns: 420px 1fr; gap: 56px; align-items: center; }
+  .ceo img { width: 100%; height: auto; }
+  .ceo blockquote { margin: 0 0 16px; font-family: var(--font-head); font-size: 1.35rem; line-height: 1.55; color: var(--navy); font-style: italic; }
+  .sign { margin: 0 0 24px; color: var(--indigo); }
+  .vision { border-left: 3px solid var(--orange); padding-left: 16px; font-style: italic; color: var(--muted); }
+  .linkedin { font-family: var(--font-head); font-weight: 600; text-decoration: none; }
+
+  .team { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .team figure { margin: 0; }
+  .team img { width: 100%; height: auto; display: block; }
+  .team-link { margin: 32px 0 0; text-align: center; }
+  .team-link a { font-family: var(--font-head); font-weight: 600; text-decoration: none; }
+
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .timeline li { background: #fff; padding: 20px; border-top: 3px solid var(--indigo); display: flex; flex-direction: column; gap: 6px; }
+  .year { font-family: var(--font-head); font-weight: 700; font-size: 1.4rem; color: var(--orange); }
+
+  .diversity { display: grid; grid-template-columns: 1.2fr 1fr; gap: 56px; align-items: center; }
+  .diversity h2 { font-size: clamp(1.6rem, 2.6vw, 2.1rem); margin: 0 0 16px; }
+  .split { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+  .split li { display: flex; align-items: baseline; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .split strong { font-family: var(--font-head); font-size: 2rem; color: var(--indigo); min-width: 110px; }
+
+  .qp-head { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; margin-bottom: 40px; }
+  .qp-head p { max-width: 720px; }
+  .qp-head img { width: 100%; height: auto; }
+  .qp-lead { font-family: var(--font-head); font-size: 1.2rem; color: var(--indigo); margin: 0 0 12px; }
+  .cia { list-style: none; margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .cia li { border-top: 3px solid var(--orange); padding-top: 14px; font-size: .95rem; color: var(--muted); }
+  .cia strong { display: block; font-family: var(--font-head); font-size: 1.05rem; color: var(--navy); margin-bottom: 4px; }
+  .sustainability { padding: 56px 0; }
+  .sus-text { max-width: 900px; font-size: 1.1rem; margin: 0; }
+
+  .commitments { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .commitments article { background: #fff; padding: 32px; border-left: 3px solid var(--indigo); }
+  .commitments h3 { margin: 0 0 12px; font-size: 1.2rem; }
+  .commitments p { margin: 0 0 12px; font-size: .97rem; }
+  .signed { font-style: italic; color: var(--indigo); }
+
+  .final-cta { background: var(--gradient-cta); color: #fff; text-align: center; padding: 72px 0; }
+  .final-cta h2 { color: #fff; font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 12px; }
+  .final-cta p { margin: 0 0 28px; font-size: 1.1rem; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 960px) {
+    .story, .ceo, .diversity { grid-template-columns: 1fr; gap: 32px; }
+    .ceo img { max-width: 380px; }
+    .team { grid-template-columns: repeat(2, 1fr); }
+    .timeline { grid-template-columns: repeat(2, 1fr); }
+    .commitments, .cia, .qp-head { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .team, .timeline { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,98 @@
+# ─────────────────────────────────────────────────────────────
+# Euroanswer — configurare Apache (gazduire.ro / cPanel)
+# ─────────────────────────────────────────────────────────────
+
+Options -Indexes -MultiViews
+DirectoryIndex index.html index.php
+AddDefaultCharset utf-8
+ErrorDocument 404 /404.html
+
+# ── Blocare indexare pe orice domeniu care NU e euroanswer.co.uk (ex. testamentulporcului.ro) ──
+# Antetul se aplică tuturor fișierelor (pagini, imagini, PDF, sitemap). Pe domeniul real nu se aplică.
+<IfModule mod_headers.c>
+  <If "%{HTTP_HOST} !~ /(^|\.)euroanswer\.co\.uk$/">
+    Header always set X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex"
+  </If>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # HTTPS obligatoriu
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # ── Redirecturi permanente (301) din vechiul site WordPress ──
+
+  # Servicii comasate în cele două categorii
+  RewriteRule ^customer-experience/?$       /customer-service-outsourcing/ [R=301,L]
+  RewriteRule ^it-outsourcing-solutions/?$  /customer-service-outsourcing/#technical-support [R=301,L,NE]
+  RewriteRule ^technical-support/?$         /customer-service-outsourcing/#technical-support [R=301,L,NE]
+  RewriteRule ^customer-support/?$          /customer-service-outsourcing/ [R=301,L]
+  RewriteRule ^outstaffing/?$               /staffing-services/#outstaffing [R=301,L,NE]
+
+  # Portfolio — industriile sunt pe Home, subpaginile au adrese proprii
+  RewriteRule ^portfolio/technology-printing/?$        /technology/ [R=301,L]
+  RewriteRule ^portfolio/banking/?$                    /banking-outsourcing-services/ [R=301,L]
+  RewriteRule ^portfolio/gaming/?$                     /gaming/ [R=301,L]
+  RewriteRule ^portfolio/education/?$                  /education/ [R=301,L]
+  RewriteRule ^portfolio/rent-a-car-online-services/?$ /rent-a-car-online-services/ [R=301,L]
+  RewriteRule ^portfolio/personal-advertising/?$       /outsourcing-advertising/ [R=301,L]
+  RewriteRule ^portfolio/digital-printing/?$           /digital-printing-outsourcing/ [R=301,L]
+  RewriteRule ^portfolio/financial/?$                  /financial/ [R=301,L]
+  RewriteRule ^portfolio(/.*)?$                        /#industries [R=301,L,NE]
+
+  # Arhive WordPress care nu mai există
+  RewriteRule ^category/case-study/?$  /insights/ [R=301,L]
+  RewriteRule ^(de/)?category/         /blog/ [R=301,L]
+  RewriteRule ^tag/                    /blog/ [R=301,L]
+  RewriteRule ^author/                 /blog/ [R=301,L]
+  RewriteRule ^de/test/?$              /de/business-process-outsourcing/ [R=301,L]
+  RewriteRule ^feed/?$                 /blog/ [R=301,L]
+  RewriteRule ^wp-admin                / [R=301,L]
+  RewriteRule ^wp-login\.php$          / [R=301,L]
+  RewriteRule ^xmlrpc\.php$            / [R=301,L]
+
+  # Link vechi /services/#quality-policy se rezolvă din pagina /services/ (fragmentul # nu ajunge la server)
+</IfModule>
+
+# Fișierele ascunse (ex. .git, .env) nu sunt accesibile, cu excepția /.well-known/
+<IfModule mod_rewrite.c>
+  RewriteRule "(^|/)\.(?!well-known/)" - [F]
+</IfModule>
+
+# Antete de securitate
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Compresie
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache: fișierele din /_astro/ au nume unice (hash) → cache 1 an; imaginile 30 de zile; HTML mereu proaspăt
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/x-icon "access plus 30 days"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

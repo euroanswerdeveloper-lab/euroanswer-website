@@ -1,0 +1,60 @@
+---
+// O singură rută pentru toate paginile și articolele: URL-ul vine din câmpul `path` din fiecare fișier .md
+// (Home, /services/, /blog/, /insights/, /about-us/ și /contact/ au pagini dedicate în src/pages/)
+import { getCollection, render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import LegalPage from '../components/LegalPage.astro';
+import ArticlePage from '../components/ArticlePage.astro';
+import IndustryPage from '../components/IndustryPage.astro';
+import heroBg from '../assets/home/hero-bg.png';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', (p) => p.data.path !== '/');
+  const posts = await getCollection('blog');
+  const toParam = (p: string) => p.replace(/^\/|\/$/g, '');
+  return [
+    ...pages.map((entry) => ({ params: { path: toParam(entry.data.path) }, props: { entry, kind: 'page' as const } })),
+    ...posts.map((entry) => ({ params: { path: toParam(entry.data.path) }, props: { entry, kind: 'post' as const } })),
+  ];
+}
+
+const { entry, kind } = Astro.props;
+const { Content, headings } = await render(entry);
+const hero = await getImage({ src: heroBg, format: 'webp', width: 2000 });
+const isLegal = kind === 'page' && entry.data.layout === 'legal';
+---
+
+{kind === 'post' ? (
+  <ArticlePage entry={entry} headings={headings}>
+    <Content />
+  </ArticlePage>
+) : kind === 'page' && entry.data.layout === 'industry' ? (
+  <IndustryPage entry={entry}>
+    <Content />
+  </IndustryPage>
+) : (
+  <Base title={entry.data.seoTitle || entry.data.title} description={entry.data.description} lang={entry.data.lang}>
+    {isLegal ? (
+      <LegalPage title={entry.data.title} updated={entry.data.updated} headings={headings}>
+        <Content />
+      </LegalPage>
+    ) : (
+      <>
+        {entry.data.intro && (
+          <section class="page-hero" style={`background-image:url(${hero.src})`}>
+            <div class="container">
+              <p class="eyebrow">{entry.data.eyebrow ?? 'Euroanswer services'}</p>
+              <h1>{entry.data.title}</h1>
+              <p>{entry.data.intro}</p>
+              <a href={entry.data.cta?.href ?? '/contact/'} class="btn btn-primary">{entry.data.cta?.label ?? 'Discuss your needs'}</a>
+            </div>
+          </section>
+        )}
+        <article class:list={['prose', { 'prose-wide': entry.data.intro }]}>
+          <Content />
+        </article>
+      </>
+    )}
+  </Base>
+)}

@@ -1,0 +1,292 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import heroBg from '../assets/home/hero-bg.png';
+import { TURNSTILE_SITE_KEY, CAREERS_URL, LIMITS, HEAR_ABOUT, FREE_EMAIL_DOMAINS } from '../data/contact';
+
+const hero = await getImage({ src: heroBg, format: 'webp', width: 2000 });
+
+const offices = [
+  { city: 'Euroanswer Bucharest', tag: 'Headquarters', address: '28 Dr. Iacob Felix St, 1st Floor, 011038, District 1, Bucharest, Romania', phone: '+40 317 305 000', tel: '+40317305000' },
+  { city: 'Euroanswer Galati', tag: 'Delivery centre', address: 'B-dul Siderurgiștilor 7, tronson 2, Bloc PS1B, ground floor, Galati, Romania', phone: '+40 317 305 000', tel: '+40317305000' },
+  { city: 'Euroanswer Skopje', tag: 'Delivery centre', address: '1-1/40 Stoltenbergova St, Skopje, North Macedonia', phone: '+389 72 205 799', tel: '+38972205799' },
+];
+---
+
+<Base
+  title="Contact Euroanswer | Talk to Our BPO Specialists"
+  description="Contact Euroanswer to discuss customer service outsourcing or staffing services. Offices in Bucharest, Galati and Skopje. Call +40 317 305 000 or send us a message."
+>
+  <script slot="head" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <section class="page-hero" style={`background-image:url(${hero.src})`}>
+    <div class="container">
+      <p class="eyebrow">Contact us</p>
+      <h1>We’re ready to talk about what matters to you.</h1>
+      <p>Tell us about your customers, channels and languages — a BPO specialist will get back to you with a personalised proposal.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <!-- INFO -->
+      <aside class="info">
+        <h2>Speak with an expert</h2>
+        <p class="direct">
+          <a href="tel:+40317305000">+40 317 305 000</a>
+          <a href="mailto:office@euroanswer.co.uk">office@euroanswer.co.uk</a>
+          <a href="mailto:sales@euroanswer.co.uk">sales@euroanswer.co.uk</a>
+        </p>
+        <div class="note">
+          <strong>Business enquiries only</strong>
+          <p>We only respond to inquiries submitted from valid business email addresses. Submissions from personal email accounts (such as Gmail, Yahoo, Outlook, etc.) may not receive a reply.</p>
+        </div>
+        <div class="note note-jobs">
+          <strong>Looking for a job?</strong>
+          <p>Please apply through our <a href={CAREERS_URL}>recruitment portal</a> or visit <a href="/join-the-team/">Join the team</a>.</p>
+        </div>
+      </aside>
+
+      <!-- FORM -->
+      <form id="contact-form" class="form" novalidate method="post" action="/api/contact.php">
+        <fieldset class="field">
+          <legend>Interested in:</legend>
+          <label class="choice"><input type="radio" name="interest" value="services" checked /> Our services — please fill out the contact form</label>
+          <label class="choice"><input type="radio" name="interest" value="jobs" data-redirect={CAREERS_URL} /> Job openings — apply on our careers portal</label>
+          <p class="redirecting" hidden>Redirecting you to our careers portal…</p>
+        </fieldset>
+
+        <div class="row">
+          <div class="field">
+            <label for="firstName">First name <span class="req">*</span></label>
+            <input id="firstName" name="firstName" type="text" required maxlength={LIMITS.text} autocomplete="given-name" />
+            <p class="error" data-for="firstName"></p>
+          </div>
+          <div class="field">
+            <label for="lastName">Last name <span class="req">*</span></label>
+            <input id="lastName" name="lastName" type="text" required maxlength={LIMITS.text} autocomplete="family-name" />
+            <p class="error" data-for="lastName"></p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="email">Business email <span class="req">*</span></label>
+            <input id="email" name="email" type="email" required maxlength={LIMITS.text} autocomplete="email" />
+            <p class="warning" id="free-email" hidden>This looks like a personal email address. We only reply to business email addresses.</p>
+            <p class="error" data-for="email"></p>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" maxlength={LIMITS.text} autocomplete="tel" />
+            <p class="error" data-for="phone"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="company">Company <span class="req">*</span></label>
+          <input id="company" name="company" type="text" required maxlength={LIMITS.text} autocomplete="organization" />
+          <p class="error" data-for="company"></p>
+        </div>
+
+        <fieldset class="field">
+          <legend>How did you hear about Euroanswer?</legend>
+          <div class="inline">
+            {HEAR_ABOUT.map((h) => <label class="choice"><input type="radio" name="hearAbout" value={h} /> {h}</label>)}
+          </div>
+          <input name="hearAboutOther" type="text" maxlength={LIMITS.text} placeholder="Other (please specify)" aria-label="Other source" />
+        </fieldset>
+
+        <div class="field">
+          <label for="message">Your message</label>
+          <textarea id="message" name="message" rows="6" maxlength={LIMITS.message}></textarea>
+          <p class="counter"><span id="count">0</span> / {LIMITS.message}</p>
+          <p class="error" data-for="message"></p>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" name="marketing" value="1" />
+          <span>I agree to receive industry news, analyst reports, white papers, case studies, and product information from Euroanswer (EA). Please refer to Euroanswer’s Privacy Policy and manage your communication preferences <a href="/euroanswer-data-protection-privacy-policy/">here</a>. Euroanswer will never sell your information to third parties. Before submitting, please review Euroanswer’s information-sharing policy <a href="/disclaimer/">here</a>.</span>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" name="consent" value="1" required />
+          <span><strong>I agree to the processing of my personal data and its transfer outside the European Economic Area (EEA)</strong>, as outlined in the <a href="/euroanswer-data-protection-privacy-policy/">Privacy Policy</a>. <span class="req">*</span><br />
+          <em lang="ro">Sunt de acord cu prelucrarea datelor cu caracter personal și transferul acestora în afara Spațiului Economic European (SEE), conform Politicii de confidențialitate.</em></span>
+        </label>
+        <p class="error" data-for="consent"></p>
+
+        <!-- Capcană pentru boți (ascunsă) -->
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true" />
+
+        <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+
+        <button type="submit" class="btn btn-primary submit">Send message</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- OFFICES -->
+  <section class="section section-soft">
+    <div class="container">
+      <p class="eyebrow">Deliver globally, talk locally</p>
+      <h2 class="section-title">Our offices</h2>
+      <div class="offices">
+        {offices.map((o) => (
+          <div class="office">
+            <span class="tag">{o.tag}</span>
+            <h3>{o.city}</h3>
+            <p>{o.address}</p>
+            <p><a href={`tel:${o.tel}`}>{o.phone}</a><br /><a href="mailto:office@euroanswer.co.uk">office@euroanswer.co.uk</a></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ freeDomains: FREE_EMAIL_DOMAINS }}>
+  const form = document.getElementById('contact-form');
+  const status = form.querySelector('.form-status');
+  const submit = form.querySelector('.submit');
+  const showError = (name, msg) => {
+    const el = form.querySelector(`.error[data-for="${name}"]`);
+    if (el) el.textContent = msg || '';
+    const input = form.elements[name];
+    if (input && input.setAttribute) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  };
+
+  // „Job openings” → redirecționare către portalul de recrutare (ca pe site-ul vechi)
+  form.querySelectorAll('input[name="interest"]').forEach((r) =>
+    r.addEventListener('change', () => {
+      if (r.dataset.redirect) {
+        form.querySelector('.redirecting').hidden = false;
+        window.location.href = r.dataset.redirect;
+      }
+    }),
+  );
+
+  // Avertisment pentru adrese de email personale
+  const email = form.elements.email;
+  const freeWarn = document.getElementById('free-email');
+  email.addEventListener('input', () => {
+    const domain = email.value.split('@')[1]?.toLowerCase().trim();
+    freeWarn.hidden = !domain || !freeDomains.includes(domain);
+  });
+
+  // Contor de caractere pentru mesaj
+  const message = form.elements.message;
+  message.addEventListener('input', () => (document.getElementById('count').textContent = message.value.length));
+
+  const validate = () => {
+    let ok = true;
+    const req = (name, msg) => { if (!form.elements[name].value.trim()) { showError(name, msg); ok = false; } else showError(name); };
+    req('firstName', 'Please enter your first name.');
+    req('lastName', 'Please enter your last name.');
+    req('company', 'Please enter your company.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { showError('email', 'Please enter a valid email address.'); ok = false; } else showError('email');
+    const phone = form.elements.phone.value.trim();
+    if (phone && !/^[+()\d\s.\-\/]{6,30}$/.test(phone)) { showError('phone', 'Please enter a valid phone number.'); ok = false; } else showError('phone');
+    if (!form.elements.consent.checked) { showError('consent', 'Please accept the processing of your personal data to continue.'); ok = false; } else showError('consent');
+    return ok;
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.textContent = '';
+    status.className = 'form-status';
+    if (!validate()) {
+      form.querySelector('[aria-invalid="true"]')?.focus();
+      return;
+    }
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+      const data = await res.json();
+      if (data.ok) {
+        form.reset();
+        document.getElementById('count').textContent = '0';
+        freeWarn.hidden = true;
+        status.textContent = 'Thank you! Your message has been sent. Our specialists will contact you as soon as possible.';
+        status.classList.add('success');
+      } else {
+        Object.entries(data.errors || {}).forEach(([k, v]) => showError(k, v));
+        status.textContent = data.error || 'Please check the highlighted fields.';
+        status.classList.add('fail');
+      }
+    } catch {
+      status.textContent = 'Something went wrong. Please try again or email office@euroanswer.co.uk.';
+      status.classList.add('fail');
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Send message';
+      window.turnstile?.reset();
+    }
+  });
+</script>
+
+<style>
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 56px; align-items: start; }
+
+  .info h2 { font-size: 1.6rem; margin: 0 0 16px; }
+  .direct { display: flex; flex-direction: column; gap: 6px; margin: 0 0 28px; }
+  .direct a { font-family: var(--font-head); font-size: 1.15rem; font-weight: 600; text-decoration: none; color: var(--navy); }
+  .direct a:hover { color: var(--indigo); }
+  .note { background: var(--bg-soft); border-left: 3px solid var(--orange); padding: 16px 20px; margin-bottom: 16px; }
+  .note p { margin: 6px 0 0; font-size: .95rem; color: var(--muted); }
+  .note-jobs { border-left-color: var(--indigo); }
+
+  .form { background: #fff; border: 1px solid var(--border); padding: 36px; box-shadow: 0 18px 40px rgba(7, 16, 52, .06); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .field { margin: 0 0 20px; border: 0; padding: 0; min-width: 0; }
+  label, legend { display: block; font-family: var(--font-head); font-weight: 500; font-size: .92rem; color: var(--navy); margin-bottom: 6px; padding: 0; }
+  .req { color: #d63031; }
+  input[type='text'], input[type='email'], input[type='tel'], textarea {
+    width: 100%; padding: 12px 14px; font: inherit; font-size: 1rem; color: var(--text);
+    border: 1px solid #cfd5e3; background: #fff; transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(34, 0, 168, .12); }
+  input[aria-invalid='true'], textarea[aria-invalid='true'] { border-color: #d63031; }
+  textarea { resize: vertical; }
+
+  .choice { display: flex; gap: 10px; align-items: center; font-family: var(--font-body); font-weight: 400; font-size: .98rem; margin: 0 0 8px; cursor: pointer; color: var(--text); }
+  .inline { display: flex; flex-wrap: wrap; gap: 4px 24px; margin-bottom: 10px; }
+  .redirecting { color: var(--indigo); font-size: .9rem; margin: 4px 0 0; }
+
+  .check { display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-family: var(--font-body); font-weight: 400; font-size: .88rem; line-height: 1.55; color: var(--muted); margin: 0 0 14px; cursor: pointer; }
+  .check input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--indigo); }
+  .check strong { color: var(--text); }
+  input[type='radio'] { accent-color: var(--indigo); width: 18px; height: 18px; }
+
+  .error { color: #d63031; font-size: .85rem; margin: 6px 0 0; min-height: 0; }
+  .error:empty { display: none; }
+  .warning { color: #b25e00; background: #fff6e8; font-size: .85rem; padding: 8px 12px; margin: 8px 0 0; }
+  .counter { text-align: right; font-size: .8rem; color: var(--muted); margin: 4px 0 0; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+  .cf-turnstile { margin: 20px 0; }
+  .submit { border: 0; cursor: pointer; font-size: 1rem; padding: 16px 36px; }
+  .submit:disabled { opacity: .6; cursor: wait; }
+  .form-status { margin: 16px 0 0; font-weight: 500; }
+  .form-status.success { color: #0a7d3b; background: #eaf8f0; padding: 14px 16px; }
+  .form-status.fail { color: #d63031; }
+
+  .section-title { font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 32px; }
+  .offices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .office { background: #fff; padding: 28px; border-top: 3px solid var(--indigo); }
+  .office h3 { margin: 6px 0 10px; font-size: 1.2rem; }
+  .office p { margin: 0 0 10px; color: var(--muted); font-size: .95rem; }
+  .office a { text-decoration: none; }
+  .tag { font-family: var(--font-head); font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--orange); }
+
+  @media (max-width: 900px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+    .offices { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .form { padding: 24px 18px; }
+    .row { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>

@@ -1,0 +1,13 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostGrid from '../components/PostGrid.astro';
+
+// Articolele din categoria Insight (în fișierul .md: categories: ["Insight"])
+const posts = (await getCollection('blog', (p) => p.data.lang === 'en' && p.data.categories.includes('Insight')))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<Base title="Insights — Euroanswer" description="Case studies and expert insights on quality, technology and performance in customer service outsourcing from Euroanswer.">
+  <PostGrid eyebrow="Insights" title="Insights & case studies" intro="How we solve real challenges in customer operations — lessons, data and results from our work with global brands." posts={posts} />
+</Base>

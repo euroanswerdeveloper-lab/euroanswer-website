@@ -1,0 +1,32 @@
+---
+// Cardurile pentru cele două categorii de servicii (folosite pe Home și pe /services/).
+// Textele pe limbi sunt în src/i18n/home.ts → services.cards
+import { homeText } from '../i18n/home';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+const cards = homeText[lang].services.cards;
+---
+
+<div class="service-cards">
+  {cards.map((c) => (
+    <a class="service-card" href={c.href}>
+      <h3>{c.title}</h3>
+      <p class="tag">{c.tag}</p>
+      <p>{c.text}</p>
+      <span class="more">{c.cta} →</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .service-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .service-card { display: block; background: var(--gradient-card); color: #fff; padding: 40px; text-decoration: none; border: 5px solid #abb8c3; transition: transform .2s; }
+  .service-card:hover { transform: translateY(-4px); }
+  .service-card h3 { color: #fff; font-size: 1.7rem; margin: 0 0 8px; }
+  .service-card .tag { color: #fcb900; font-family: var(--font-head); font-weight: 600; margin: 0 0 16px; }
+  .service-card p { color: #e6ebf7; }
+  .more { display: inline-block; margin-top: 8px; background: #fff; color: var(--navy); padding: 10px 20px; font-family: var(--font-head); font-weight: 600; font-size: 0.9rem; }
+  @media (max-width: 760px) { .service-cards { grid-template-columns: 1fr; } .service-card { padding: 28px; } }
+</style>

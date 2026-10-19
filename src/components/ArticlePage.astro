@@ -1,0 +1,223 @@
+---
+// Șablon pentru articole (Blog + Insights). Elementele de studiu de caz (cifre, „At a glance”)
+// apar doar dacă articolul are `results` / `facts` în antetul fișierului .md.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import Base from '../layouts/Base.astro';
+
+interface Props {
+  entry: CollectionEntry<'blog'>;
+  headings: MarkdownHeading[];
+}
+const { entry, headings } = Astro.props;
+const d = entry.data;
+
+const isInsight = d.categories.includes('Insight');
+const section = isInsight ? { label: 'Insights', href: '/insights/' } : { label: 'Blog', href: '/blog/' };
+const kind = isInsight ? (d.results ? 'Insight · Case study' : 'Insight') : d.categories[0] ?? 'Blog';
+const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+const date = d.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const toc = headings.filter((h) => h.depth === 2);
+const showToc = toc.length >= 3;
+
+// Articole similare: întâi aceeași categorie, apoi cele mai noi
+const all = await getCollection('blog', (p) => p.data.lang === d.lang && p.id !== entry.id);
+const related = all
+  .sort((a, b) => {
+    const sameA = a.data.categories.some((c) => d.categories.includes(c)) ? 1 : 0;
+    const sameB = b.data.categories.some((c) => d.categories.includes(c)) ? 1 : 0;
+    return sameB - sameA || +b.data.date - +a.data.date;
+  })
+  .slice(0, 3);
+const clean = (s = '') => s.replace(/\s*\[(&hellip;|…)\]\s*$/, '…').replace(/&hellip;/g, '…');
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: d.title,
+  description: d.summary ?? clean(d.description),
+  datePublished: d.date.toISOString(),
+  inLanguage: d.lang,
+  image: d.image ? new URL(d.image, Astro.site).href : undefined,
+  author: { '@type': 'Organization', name: 'Euroanswer', url: 'https://www.euroanswer.co.uk/' },
+  publisher: { '@id': 'https://www.euroanswer.co.uk/#organization' },
+  mainEntityOfPage: new URL(d.path, Astro.site).href,
+};
+---
+
+<Base title={d.seoTitle || d.title} description={d.summary ?? d.description} lang={d.lang} image={d.image}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+  <!-- HERO -->
+  <header class:list={['a-hero', { 'has-results': d.results }]}>
+    <div class="container a-hero-inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span> <a href={section.href}>{section.label}</a>
+      </nav>
+      <span class="badge">{kind}</span>
+      <h1>{d.title}</h1>
+      {d.summary && <p class="dek">{d.summary}</p>}
+      <p class="meta">
+        <time datetime={d.date.toISOString()}>{date}</time>
+        <span>·</span>
+        <span>{minutes} min read</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- CIFRE CHEIE -->
+  {d.results && (
+    <section class="container results" aria-label="Key results">
+      {d.results.map((r) => (
+        <div class="result">
+          <strong>{r.value}</strong>
+          <span>{r.label}</span>
+        </div>
+      ))}
+    </section>
+  )}
+
+  <!-- CONȚINUT -->
+  <div class:list={['container', 'a-grid', { 'no-aside': !showToc && !d.facts }]}>
+    <article class="a-body">
+      {d.image && d.showImage && <img class="cover" src={d.image} alt={d.title} />}
+      <slot />
+    </article>
+
+    {(showToc || d.facts) && (
+      <aside class="a-aside">
+        {d.facts && (
+          <div class="glance">
+            <p class="aside-title">At a glance</p>
+            <dl>
+              {d.facts.map((f) => (<><dt>{f.label}</dt><dd>{f.value}</dd></>))}
+            </dl>
+          </div>
+        )}
+        {showToc && (
+          <nav class="toc" aria-label="In this article">
+            <p class="aside-title">In this article</p>
+            <ol>
+              {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+            </ol>
+          </nav>
+        )}
+      </aside>
+    )}
+  </div>
+
+  <!-- CTA -->
+  <section class="container">
+    <div class="a-cta">
+      <div>
+        <h2>{isInsight ? 'Want this level of visibility in your operation?' : 'Looking for a BPO partner?'}</h2>
+        <p>Tell us about your customers, channels and languages — we’ll show you how we’d run it.</p>
+      </div>
+      <a href="/contact/" class="btn btn-light">Talk to our team →</a>
+    </div>
+  </section>
+
+  <!-- ARTICOLE SIMILARE -->
+  {related.length > 0 && (
+    <section class="container related">
+      <h2>Keep reading</h2>
+      <div class="related-grid">
+        {related.map((p) => (
+          <a class="r-card" href={p.data.path}>
+            {p.data.image
+              ? <img src={p.data.image} alt="" loading="lazy" />
+              : <div class="r-ph"></div>}
+            <div class="r-body">
+              <span class="r-meta">{p.data.categories[0] ?? 'Blog'} · {p.data.date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}</span>
+              <h3>{p.data.title}</h3>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  /* Hero */
+  .a-hero { background: radial-gradient(circle at 85% 10%, rgba(240,122,60,.22), transparent 40%), radial-gradient(circle at 0% 100%, rgba(40,116,252,.25), transparent 50%), var(--navy); color: #dbe2f5; padding: 40px 0 56px; }
+  .a-hero.has-results { padding-bottom: 104px; }
+  .a-hero-inner { max-width: 900px; }
+  .crumbs { font-size: .85rem; margin-bottom: 20px; color: #9fb0e8; }
+  .crumbs a { color: #c9d2f5; text-decoration: none; }
+  .crumbs a:hover { color: #fff; text-decoration: underline; }
+  .crumbs span { margin: 0 6px; opacity: .5; }
+  .badge { display: inline-block; font-family: var(--font-head); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #1a0b00; background: var(--yellow); padding: 5px 12px; border-radius: 99px; margin-bottom: 18px; }
+  .a-hero h1 { color: #fff; font-size: clamp(2rem, 4.2vw, 3.1rem); line-height: 1.15; margin: 0 0 16px; }
+  .dek { font-size: 1.2rem; color: #dbe2f5; max-width: 760px; margin: 0 0 20px; }
+  .meta { display: flex; gap: 10px; font-size: .9rem; color: #9fb0e8; margin: 0; }
+
+  /* Cifre */
+  .results { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: -64px; position: relative; z-index: 1; }
+  .result { background: #fff; padding: 22px 22px 20px; border-top: 4px solid var(--orange); box-shadow: 0 16px 40px rgba(7,16,52,.12); }
+  .result strong { display: block; font-family: var(--font-head); font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1.1; color: var(--indigo); margin-bottom: 6px; white-space: nowrap; }
+  .result span { font-size: .9rem; color: var(--muted); }
+
+  /* Conținut */
+  .a-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 64px; padding-top: 56px; padding-bottom: 32px; align-items: start; }
+  .a-grid.no-aside { grid-template-columns: minmax(0, 760px); justify-content: center; }
+  .a-body { font-size: 1.08rem; line-height: 1.8; max-width: 760px; }
+  .a-body > :global(p:first-of-type) { font-size: 1.25rem; line-height: 1.65; color: var(--navy); }
+  .a-body :global(h2) { font-size: 1.6rem; margin: 48px 0 14px; scroll-margin-top: 100px; position: relative; padding-left: 18px; }
+  .a-body :global(h2)::before { content: ''; position: absolute; left: 0; top: .2em; bottom: .2em; width: 4px; border-radius: 2px; background: var(--gradient-cta); }
+  .a-body :global(h3) { font-size: 1.25rem; margin: 32px 0 10px; }
+  .a-body :global(ul) { padding-left: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px; }
+  .a-body :global(ul li) { background: var(--bg-soft); padding: 12px 16px 12px 40px; position: relative; font-size: 1rem; }
+  .a-body :global(ul li)::before { content: '✓'; position: absolute; left: 16px; color: var(--orange); font-weight: 700; }
+  .a-body :global(blockquote) { margin: 36px 0; padding: 28px 32px; background: var(--navy); color: #fff; font-family: var(--font-head); font-size: 1.35rem; line-height: 1.5; position: relative; border-left: 0; }
+  .a-body :global(blockquote)::before { content: '“'; position: absolute; top: -18px; left: 20px; font-family: Georgia, serif; font-size: 5rem; color: var(--orange); line-height: 1; }
+  .a-body :global(blockquote p) { margin: 0; }
+  .a-body :global(img) { max-width: 100%; height: auto; }
+  .cover { display: block; width: 100%; margin: 0 0 32px; }
+
+  /* Bara laterală */
+  .a-aside { position: sticky; top: 100px; display: grid; gap: 20px; }
+  .aside-title { font-family: var(--font-head); font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  .glance { background: var(--bg-soft); padding: 22px; border-top: 3px solid var(--indigo); }
+  .glance dl { margin: 0; }
+  .glance dt { font-family: var(--font-head); font-size: .78rem; font-weight: 600; color: var(--indigo); margin-top: 12px; }
+  .glance dt:first-child { margin-top: 0; }
+  .glance dd { margin: 2px 0 0; font-size: .93rem; color: var(--text); }
+  .toc { border-left: 2px solid var(--border); padding-left: 16px; }
+  .toc ol { margin: 0; padding-left: 1.1em; font-size: .9rem; }
+  .toc li { margin-bottom: 8px; color: var(--muted); }
+  .toc a { color: var(--navy); text-decoration: none; }
+  .toc a:hover { color: var(--indigo); text-decoration: underline; }
+
+  /* CTA */
+  .a-cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; background: var(--gradient-card); color: #fff; padding: 36px 40px; margin: 24px 0 64px; }
+  .a-cta h2 { color: #fff; margin: 0 0 6px; font-size: 1.5rem; }
+  .a-cta p { margin: 0; color: #dbe2f5; }
+
+  /* Similare */
+  .related { padding-bottom: 80px; }
+  .related h2 { font-size: 1.5rem; margin: 0 0 20px; }
+  .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .r-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; border: 1px solid var(--border); background: #fff; transition: transform .2s, box-shadow .2s; }
+  .r-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(7,16,52,.08); }
+  .r-card img, .r-ph { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--bg-soft); }
+  .r-body { padding: 14px 16px 18px; }
+  .r-meta { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .r-card h3 { font-size: 1rem; line-height: 1.4; margin: 6px 0 0; color: var(--navy); }
+
+  @media (max-width: 1000px) {
+    .results { grid-template-columns: repeat(2, 1fr); }
+    .a-grid { grid-template-columns: 1fr; gap: 32px; }
+    .a-aside { position: static; order: -1; }
+    .toc { display: none; }
+  }
+  @media (max-width: 640px) {
+    .results { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .result { padding: 16px; }
+    .result strong { font-size: 1.35rem; white-space: normal; }
+    .a-body :global(ul) { grid-template-columns: 1fr; }
+    .related-grid { grid-template-columns: 1fr; }
+    .a-cta { padding: 28px 22px; }
+  }
+</style>

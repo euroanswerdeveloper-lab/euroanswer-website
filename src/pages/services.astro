@@ -1,0 +1,58 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ServiceCards from '../components/ServiceCards.astro';
+import heroBg from '../assets/home/hero-bg.png';
+
+const hero = await getImage({ src: heroBg, format: 'webp', width: 2000 });
+---
+
+<Base
+  title="BPO Services | Customer Service Outsourcing & Staffing — Euroanswer"
+  description="Two ways to work with Euroanswer: full customer service outsourcing in 20+ languages, or dedicated staffing and outstaffing for your own operations."
+>
+  <section class="page-hero" style={`background-image:url(${hero.src})`}>
+    <div class="container">
+      <p class="eyebrow">Our services</p>
+      <h1>Two ways to work with us</h1>
+      <p>Hand us your customer operations end to end, or let us build and manage the team that runs them for you. Either way, you get the same multilingual people, processes and quality standards.</p>
+      <a href="/contact/" class="btn btn-primary">Discuss your needs</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <ServiceCards />
+      <div class="compare">
+        <div>
+          <h2>Choose Customer Service Outsourcing if…</h2>
+          <ul>
+            <li>you want an outcome — answered customers, resolved tickets — not headcount</li>
+            <li>you need 24/7 coverage or many languages without building it yourself</li>
+            <li>you prefer we own the processes, tools, QA and reporting</li>
+          </ul>
+        </div>
+        <div>
+          <h2>Choose Staffing Services if…</h2>
+          <ul>
+            <li>you want to direct the people day to day, inside your own processes</li>
+            <li>you’re facing seasonal peaks, a new project or high turnover</li>
+            <li>you need recruitment, payroll and compliance taken off your plate</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script is:inline>
+  // Linkul vechi /services/#quality-policy duce acum la secțiunea din About us
+  if (location.hash === '#quality-policy') location.replace('/about-us/#quality-policy');
+</script>
+
+<style>
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 64px; }
+  .compare h2 { font-size: 1.3rem; margin: 0 0 12px; }
+  .compare li { margin-bottom: 8px; }
+  @media (max-width: 760px) { .compare { grid-template-columns: 1fr; gap: 24px; } }
+</style>

@@ -1,0 +1,206 @@
+---
+// Șablon pentru paginile de industrie (layout: industry). Datele vin din antetul fișierului .md:
+// industry, icon, intro, kpis, volumes, facts, testimonial. Textul paginii e corpul fișierului.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import heroBg from '../assets/home/hero-bg.png';
+
+interface Props { entry: CollectionEntry<'pages'> }
+const { entry } = Astro.props;
+const d = entry.data;
+const hero = await getImage({ src: heroBg, format: 'webp', width: 2000 });
+const icon = (name?: string) => (name ? `/game/icons/${name}.svg` : undefined);
+
+const others = (await getCollection('pages', (p) => p.data.layout === 'industry' && p.data.lang === d.lang && p.id !== entry.id))
+  .sort((a, b) => (a.data.industry ?? '').localeCompare(b.data.industry ?? ''));
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `${d.industry} customer support outsourcing`,
+  serviceType: 'Business process outsourcing',
+  description: d.description,
+  provider: { '@id': 'https://www.euroanswer.co.uk/#organization' },
+  areaServed: 'Europe',
+  url: new URL(d.path, Astro.site).href,
+};
+---
+
+<Base title={d.seoTitle || d.title} description={d.description} lang={d.lang}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
+  <!-- HERO -->
+  <header class:list={['i-hero', { 'has-kpis': d.kpis }]} style={`background-image:url(${hero.src})`}>
+    <div class="container i-hero-grid">
+      <div>
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a> <span>/</span> <a href="/#industries">Industries</a> <span>/</span> <span aria-current="page">{d.industry}</span>
+        </nav>
+        <span class="badge">{d.industry}</span>
+        <h1>{d.title}</h1>
+        {d.intro && <p class="lead">{d.intro}</p>}
+        <div class="actions">
+          <a href="/contact/" class="btn btn-primary">Discuss your needs</a>
+          <a href="/customer-service-outsourcing/" class="btn btn-outline">Our customer service</a>
+        </div>
+      </div>
+      {d.icon && <img class="hero-icon" src={icon(d.icon)} alt="" width="200" height="200" />}
+    </div>
+  </header>
+
+  <!-- KPI-uri -->
+  {d.kpis && (
+    <section class="container kpis" aria-label="Contractual KPIs">
+      {d.kpis.map((k) => (
+        <div class="kpi"><strong>{k.value}</strong><span>{k.label}</span></div>
+      ))}
+    </section>
+  )}
+
+  <!-- CONȚINUT + LATERAL -->
+  <div class="container i-grid">
+    <article class="i-body">
+      <slot />
+    </article>
+
+    <aside class="i-aside">
+      {d.facts && (
+        <div class="card glance">
+          <p class="aside-title">At a glance</p>
+          <dl>{d.facts.map((f) => (<><dt>{f.label}</dt><dd>{f.value}</dd></>))}</dl>
+        </div>
+      )}
+      {d.volumes && (
+        <div class="card volumes">
+          <p class="aside-title">Volumes handled</p>
+          <ul>{d.volumes.map((v) => <li><strong>{v.value}</strong><span>{v.label}</span></li>)}</ul>
+        </div>
+      )}
+      <div class="card mini-cta">
+        <p>Need a team like this for your {d.industry?.toLowerCase()} customers?</p>
+        <a href="/contact/" class="btn btn-primary">Talk to us →</a>
+      </div>
+    </aside>
+  </div>
+
+  <!-- TESTIMONIAL -->
+  {d.testimonial && (
+    <section class="container">
+      <figure class="i-quote">
+        <span class="mark" aria-hidden="true">“</span>
+        <blockquote>{d.testimonial.quote}</blockquote>
+        <figcaption>
+          {d.testimonial.author && <strong>{d.testimonial.author}</strong>}
+          {[d.testimonial.role, d.testimonial.company].filter(Boolean).join(' · ')}
+        </figcaption>
+      </figure>
+    </section>
+  )}
+
+  <!-- ALTE INDUSTRII -->
+  {others.length > 0 && (
+    <section class="container others">
+      <h2>Other industries we support</h2>
+      <div class="others-grid">
+        {others.map((o) => (
+          <a href={o.data.path} class="other">
+            {o.data.icon && <img src={icon(o.data.icon)} alt="" width="36" height="36" loading="lazy" />}
+            <span>{o.data.industry}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- CTA FINAL -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Let’s build your {d.industry?.toLowerCase()} support team</h2>
+      <p>Tell us about your customers, channels and languages — we’ll come back with a personalised proposal.</p>
+      <a href="/contact/" class="btn btn-light">Discuss your needs</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .i-hero { background-color: var(--navy); background-size: cover; background-position: center right; color: #dbe2f5; padding: 40px 0 64px; }
+  .i-hero.has-kpis { padding-bottom: 112px; }
+  .i-hero-grid { display: grid; grid-template-columns: 1fr 220px; gap: 40px; align-items: center; }
+  .crumbs { font-size: .85rem; margin-bottom: 18px; color: #9fb0e8; }
+  .crumbs a { color: #c9d2f5; text-decoration: none; }
+  .crumbs a:hover { color: #fff; text-decoration: underline; }
+  .crumbs span { margin: 0 4px; }
+  .crumbs [aria-current] { color: #fff; }
+  .badge { display: inline-block; font-family: var(--font-head); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #1a0b00; background: var(--yellow); padding: 5px 12px; border-radius: 99px; margin-bottom: 16px; }
+  .i-hero h1 { color: #fff; font-size: clamp(1.9rem, 3.8vw, 2.9rem); line-height: 1.15; margin: 0 0 16px; max-width: 820px; }
+  .lead { font-size: 1.15rem; max-width: 760px; margin: 0 0 28px; }
+  .actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-icon { width: 200px; height: 200px; filter: drop-shadow(0 18px 40px rgba(0,0,0,.35)); animation: float 5s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: -72px; position: relative; z-index: 1; }
+  .kpi { background: #fff; padding: 22px; border-top: 4px solid var(--orange); box-shadow: 0 16px 40px rgba(7,16,52,.12); }
+  .kpi strong { display: block; font-family: var(--font-head); font-size: clamp(1.6rem, 2.6vw, 2.1rem); line-height: 1.1; color: var(--indigo); margin-bottom: 6px; }
+  .kpi span { font-size: .9rem; color: var(--muted); }
+
+  .i-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 56px; padding-top: 56px; padding-bottom: 48px; align-items: start; }
+  .i-body { font-size: 1.05rem; line-height: 1.75; max-width: 780px; }
+  .i-body > :global(p:first-child) { font-size: 1.2rem; color: var(--navy); }
+  .i-body :global(h2) { font-size: 1.55rem; margin: 44px 0 14px; padding-left: 16px; position: relative; }
+  .i-body :global(h2)::before { content: ''; position: absolute; left: 0; top: .2em; bottom: .2em; width: 4px; border-radius: 2px; background: var(--gradient-cta); }
+  .i-body :global(h3) { font-size: 1.12rem; margin: 0 0 6px; }
+  .i-body :global(ul) { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px; }
+  .i-body :global(ul li) { background: var(--bg-soft); padding: 12px 16px 12px 40px; position: relative; font-size: .98rem; }
+  .i-body :global(ul li)::before { content: '✓'; position: absolute; left: 16px; color: var(--orange); font-weight: 700; }
+  .i-body :global(.cards) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; margin: 16px 0; }
+  .i-body :global(.cards > div) { border: 1px solid var(--border); border-top: 3px solid var(--indigo); padding: 18px; background: #fff; }
+  .i-body :global(.cards p) { margin: 0; font-size: .95rem; color: var(--muted); }
+  .i-body :global(.faq details) { border: 1px solid var(--border); padding: 14px 18px; margin-bottom: 10px; background: #fff; }
+  .i-body :global(.faq summary) { font-family: var(--font-head); font-weight: 600; color: var(--navy); cursor: pointer; }
+  .i-body :global(.faq details p) { margin: 10px 0 0; font-size: .97rem; }
+
+  .i-aside { position: sticky; top: 100px; display: grid; gap: 16px; }
+  .card { background: var(--bg-soft); padding: 22px; }
+  .aside-title { font-family: var(--font-head); font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  .glance { border-top: 3px solid var(--indigo); }
+  .glance dl { margin: 0; }
+  .glance dt { font-family: var(--font-head); font-size: .78rem; font-weight: 600; color: var(--indigo); margin-top: 12px; }
+  .glance dt:first-child { margin-top: 0; }
+  .glance dd { margin: 2px 0 0; font-size: .93rem; }
+  .volumes ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .volumes strong { display: block; font-family: var(--font-head); font-size: 1.5rem; color: var(--navy); line-height: 1.1; }
+  .volumes span { font-size: .85rem; color: var(--muted); }
+  .mini-cta { background: var(--gradient-card); color: #fff; }
+  .mini-cta p { margin: 0 0 14px; font-family: var(--font-head); font-weight: 500; }
+  .mini-cta .btn { padding: 10px 18px; }
+
+  .i-quote { position: relative; margin: 8px auto 64px; max-width: 900px; padding: 40px 48px; background: #fff; border-top: 4px solid transparent; border-image: var(--gradient-cta) 1; box-shadow: 0 18px 40px rgba(7,16,52,.08); outline: 1px solid var(--border); outline-offset: -1px; }
+  .i-quote .mark { position: absolute; top: -10px; left: 28px; font-family: Georgia, serif; font-size: 6rem; line-height: 1; color: var(--orange); opacity: .25; }
+  .i-quote blockquote { margin: 0 0 18px; font-family: var(--font-head); font-size: 1.15rem; line-height: 1.7; color: var(--navy); font-style: italic; }
+  .i-quote figcaption { color: var(--muted); font-size: .95rem; }
+  .i-quote figcaption strong { display: block; color: var(--navy); font-family: var(--font-head); }
+
+  .others { padding-bottom: 72px; }
+  .others h2 { font-size: 1.4rem; margin: 0 0 18px; }
+  .others-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .other { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); text-decoration: none; color: var(--navy); font-family: var(--font-head); font-weight: 600; background: #fff; transition: transform .15s, border-color .15s; }
+  .other:hover { transform: translateY(-2px); border-color: var(--indigo); }
+
+  .final-cta { background: var(--gradient-cta); color: #fff; text-align: center; padding: 64px 0; }
+  .final-cta h2 { color: #fff; font-size: clamp(1.7rem, 3vw, 2.2rem); margin: 0 0 10px; }
+  .final-cta p { margin: 0 0 24px; font-size: 1.05rem; }
+
+  @media (max-width: 1000px) {
+    .i-grid { grid-template-columns: 1fr; gap: 24px; }
+    .i-aside { position: static; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  }
+  @media (max-width: 700px) {
+    .i-hero-grid { grid-template-columns: 1fr; }
+    .hero-icon { width: 110px; height: 110px; order: -1; }
+    .kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kpi { padding: 16px; }
+    .i-quote { padding: 32px 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero-icon { animation: none; } }
+</style>

@@ -1,0 +1,71 @@
+---
+// Șablon pentru paginile legale (Privacy Policy, Cookies Policy, Disclaimer):
+// antet simplu, cuprins lateral generat automat din titlurile ## și text ușor de citit.
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  title: string;
+  updated?: string;
+  headings: MarkdownHeading[];
+}
+const { title, updated, headings } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2);
+---
+
+<section class="legal-head">
+  <div class="container">
+    <p class="eyebrow">Legal</p>
+    <h1>{title}</h1>
+    {updated && <p class="updated">Last updated: {updated}</p>}
+  </div>
+</section>
+
+<div class="container legal-grid">
+  {toc.length > 0 && (
+    <nav class="toc" aria-label="Contents">
+      <p class="toc-title">Contents</p>
+      <ol>
+        {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text.replace(/^\d+\.\s*/, '')}</a></li>)}
+      </ol>
+    </nav>
+  )}
+  <article class="legal-body">
+    <slot />
+  </article>
+</div>
+
+<style>
+  .legal-head { background: var(--bg-soft); border-bottom: 1px solid var(--border); padding: 48px 0 36px; }
+  .legal-head h1 { font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 8px; }
+  .updated { margin: 0; color: var(--muted); font-size: .95rem; }
+
+  .legal-grid { display: grid; grid-template-columns: 260px 1fr; gap: 56px; padding-top: 48px; padding-bottom: 80px; align-items: start; }
+
+  .toc { position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow: auto; border-left: 2px solid var(--border); padding-left: 16px; }
+  .toc-title { font-family: var(--font-head); font-weight: 600; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  .toc ol { margin: 0; padding-left: 1.2em; font-size: .92rem; }
+  .toc li { margin-bottom: 8px; color: var(--muted); }
+  .toc a { color: var(--navy); text-decoration: none; }
+  .toc a:hover { color: var(--indigo); text-decoration: underline; }
+
+  .legal-body { max-width: 820px; min-width: 0; font-size: 1rem; }
+  .legal-body :global(h2) { font-size: 1.45rem; margin: 48px 0 14px; padding-top: 24px; border-top: 1px solid var(--border); scroll-margin-top: 100px; }
+  .legal-body :global(h2:first-child) { margin-top: 0; padding-top: 0; border-top: 0; }
+  .legal-body :global(h3) { font-size: 1.12rem; margin: 28px 0 10px; scroll-margin-top: 100px; }
+  .legal-body :global(table) { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: .93rem; display: block; overflow-x: auto; }
+  .legal-body :global(th), .legal-body :global(td) { text-align: left; vertical-align: top; padding: 10px 12px; border: 1px solid var(--border); }
+  .legal-body :global(th) { background: var(--bg-soft); font-family: var(--font-head); font-weight: 600; color: var(--navy); }
+  .legal-body :global(.purpose) { background: var(--bg-soft); border-left: 3px solid var(--indigo); padding: 14px 18px; margin: 12px 0 16px; }
+  .legal-body :global(.purpose p) { margin: 0 0 6px; }
+  .legal-body :global(.purpose p:last-child) { margin: 0; }
+  .legal-body :global(.contact-card) { border: 1px solid var(--border); padding: 18px 22px; margin: 16px 0; }
+  .legal-body :global(.contact-card p) { margin: 0; }
+  .legal-body :global(dl) { margin: 12px 0; }
+  .legal-body :global(dt) { font-family: var(--font-head); font-weight: 600; color: var(--navy); margin-top: 14px; }
+  .legal-body :global(dd) { margin: 4px 0 0; }
+
+  @media (max-width: 900px) {
+    .legal-grid { grid-template-columns: 1fr; gap: 24px; padding-top: 32px; }
+    .toc { position: static; max-height: none; background: var(--bg-soft); border-left: 0; padding: 16px 20px; }
+  }
+</style>

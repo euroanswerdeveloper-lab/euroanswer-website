@@ -1,0 +1,13 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostGrid from '../components/PostGrid.astro';
+
+// Toate articolele în engleză, mai puțin cele din categoria Insight (au secțiunea lor: /insights/)
+const posts = (await getCollection('blog', (p) => p.data.lang === 'en' && !p.data.categories.includes('Insight')))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<Base title="Blog — Euroanswer" description="News and stories on customer service outsourcing, staffing and life at Euroanswer.">
+  <PostGrid eyebrow="Blog" title="News & stories" intro="Customer service outsourcing, staffing and life at Euroanswer." posts={posts} />
+</Base>

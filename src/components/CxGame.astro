@@ -1,0 +1,463 @@
+---
+// Mini-joc arcade „Handled or Helped?” — vizitatorul răspunde ca un agent la 5 clienți din 5 țări.
+// Textele și scenariile: src/i18n/game.ts · Icoane: public/game/icons/ (Fluent Emoji, licență MIT)
+import { scenarios, gameText } from '../i18n/game';
+import { homeText } from '../i18n/home';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = 'en' } = Astro.props;
+const t = gameText[lang];
+const icon = (name: string) => `/game/icons/${name}.svg`;
+
+const payload = {
+  t,
+  contactUrl: homeText[lang].links.contact,
+  rounds: scenarios.map((s) => ({
+    code: s.code,
+    name: s.name,
+    avatar: s.avatar,
+    channelIcon: s.channelIcon,
+    sectorIcon: s.sectorIcon,
+    channel: s.channel[lang],
+    sector: s.sector[lang],
+    original: s.original,
+    // Fără traducere dacă clientul scrie deja în limba vizitatorului
+    translation: s.code.toLowerCase() === lang ? null : s.translation[lang],
+    options: [
+      { kind: 'best', text: s.best[lang] },
+      { kind: 'ok', text: s.ok[lang] },
+      { kind: 'bad', text: s.bad[lang] },
+    ],
+  })),
+};
+---
+
+<section class="game" id="cx-game">
+  <div class="container">
+    <div class="game-head">
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2>{t.title}</h2>
+      <p>{t.intro}</p>
+    </div>
+
+    <div class="cabinet" data-game={JSON.stringify(payload)}>
+      <div class="hud" aria-hidden="true">
+        <span class="hud-item"><img src={icon('joystick')} alt="" width="18" height="18" /> {t.level} <b class="hud-level">0/{scenarios.length}</b></span>
+        <span class="hud-item"><img src={icon('sparkles')} alt="" width="18" height="18" /> {t.score} <b class="hud-score">0000</b></span>
+        <span class="hud-item hud-streak-wrap"><img src={icon('fire')} alt="" width="18" height="18" /> <b class="hud-streak">x0</b></span>
+        <span class="hud-item"><img src={icon('trophy')} alt="" width="18" height="18" /> {t.best} <b class="hud-best">----</b></span>
+      </div>
+
+      <div class="stage" aria-live="polite">
+        <div class="screen screen-intro">
+          <img class="bell" src={icon('headphone')} alt="" width="72" height="72" />
+          <div class="avatars" aria-hidden="true">
+            {scenarios.map((s) => (
+              <span class="avatar-mini"><img src={icon(s.avatar)} alt="" width="40" height="40" /><i>{s.code}</i></span>
+            ))}
+          </div>
+          <p class="intro-rules">{t.rules.join(' · ')}</p>
+          <button type="button" class="press-start start">▶ {t.press}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  type Kind = 'best' | 'ok' | 'bad' | 'timeout';
+  type Option = { kind: Exclude<Kind, 'timeout'>; text: string };
+  type Round = {
+    code: string; name: string; avatar: string; channelIcon: string; sectorIcon: string;
+    channel: string; sector: string; original: string; translation: string | null; options: Option[];
+  };
+
+  const ROUND_SECONDS = 20;
+  const POINTS: Record<Kind, number> = { best: 100, ok: 40, bad: 0, timeout: 0 };
+  const STARS: Record<Kind, number> = { best: 5, ok: 3, bad: 1, timeout: 1 };
+  const REACTION: Record<Kind, string> = { best: 'love', ok: 'neutral', bad: 'steam', timeout: 'hourglass' };
+  const LEVEL_ICON = ['seedling', 'sparkles', 'star-struck', 'trophy'];
+  const BEST_KEY = 'euroanswer-game-best';
+  const icon = (name: string) => `/game/icons/${name}.svg`;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Recordul se păstrează doar în browserul vizitatorului (poate lipsi în modul privat)
+  const readBest = () => { try { return Number(localStorage.getItem(BEST_KEY)) || 0; } catch { return 0; } };
+  const writeBest = (v: number) => { try { localStorage.setItem(BEST_KEY, String(v)); } catch {} };
+
+  document.querySelectorAll<HTMLElement>('.cabinet[data-game]').forEach((cab) => {
+    const { t, contactUrl, rounds } = JSON.parse(cab.dataset.game!) as { t: any; contactUrl: string; rounds: Round[] };
+    const stage = cab.querySelector<HTMLElement>('.stage')!;
+    const hud = {
+      level: cab.querySelector<HTMLElement>('.hud-level')!,
+      score: cab.querySelector<HTMLElement>('.hud-score')!,
+      streak: cab.querySelector<HTMLElement>('.hud-streak')!,
+      streakWrap: cab.querySelector<HTMLElement>('.hud-streak-wrap')!,
+      best: cab.querySelector<HTMLElement>('.hud-best')!,
+    };
+    let index = 0, score = 0, helped = 0, streak = 0, stars: number[] = [];
+    let timer: number | undefined, deadline = 0, state: 'intro' | 'round' | 'feedback' | 'result' = 'intro';
+    let onNext: (() => void) | null = null;
+
+    const pad = (n: number) => String(n).padStart(4, '0');
+    const best0 = readBest();
+    hud.best.textContent = best0 ? pad(best0) : '----';
+
+    const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    };
+    const img = (name: string, cls: string, size: number) => {
+      const i = el('img', cls) as HTMLImageElement;
+      i.src = icon(name); i.alt = ''; i.width = size; i.height = size;
+      return i;
+    };
+    const shuffle = <T,>(arr: T[]) => arr.map((v) => [Math.random(), v] as const).sort((a, b) => a[0] - b[0]).map(([, v]) => v);
+
+    const updateHud = () => {
+      hud.level.textContent = `${Math.min(index + 1, rounds.length)}/${rounds.length}`;
+      hud.score.textContent = pad(score);
+      hud.streak.textContent = `x${streak}`;
+      hud.streakWrap.classList.toggle('hot', streak >= 2);
+    };
+
+    const render = (screen: HTMLElement) => {
+      stage.replaceChildren(screen);
+      screen.querySelector<HTMLElement>('[data-focus]')?.focus({ preventScroll: true });
+    };
+
+    function start() {
+      index = 0; score = 0; helped = 0; streak = 0; stars = [];
+      showRound();
+    }
+
+    function showRound() {
+      state = 'round';
+      updateHud();
+      const r = rounds[index];
+      const screen = el('div', 'screen screen-round');
+
+      // Clientul + mesajul
+      const top = el('div', 'customer');
+      const face = el('div', 'face');
+      const avatar = img(r.avatar, 'avatar', 64);
+      face.append(avatar, el('span', 'lang-badge', r.code));
+      const msg = el('div', 'msg');
+      const meta = el('div', 'meta');
+      const name = el('strong', '', r.name);
+      name.tabIndex = -1; name.dataset.focus = '';
+      const chips = el('span', 'chips');
+      const chip = (ic: string, label: string) => { const c = el('span', 'chip'); c.append(img(ic, '', 16), document.createTextNode(label)); return c; };
+      chips.append(chip(r.channelIcon, r.channel), chip(r.sectorIcon, r.sector));
+      meta.append(name, chips);
+      const bubble = el('div', 'bubble');
+      bubble.append(el('p', 'original', r.original));
+      if (r.translation) {
+        const tr = el('p', 'translation');
+        tr.append(el('span', 'ai', t.translated), document.createTextNode(' ' + r.translation));
+        bubble.append(tr);
+      }
+      msg.append(meta, bubble);
+      top.append(face, msg);
+
+      // Răbdarea clientului (cronometru)
+      const patience = el('div', 'patience');
+      const label = el('span', 'patience-label', t.patience);
+      const track = el('div', 'patience-track');
+      const bar = el('div', 'patience-bar');
+      const secs = el('span', 'patience-secs', `${ROUND_SECONDS}s`);
+      track.append(bar);
+      patience.append(label, track, secs);
+
+      // Cardurile de răspuns
+      const options = el('div', 'options');
+      options.setAttribute('role', 'group');
+      options.setAttribute('aria-label', t.pick);
+      shuffle(r.options).forEach((o, i) => {
+        const b = el('button', 'option') as HTMLButtonElement;
+        b.type = 'button';
+        b.dataset.kind = o.kind;
+        b.dataset.key = String.fromCharCode(97 + i);
+        b.append(el('span', 'key', String.fromCharCode(65 + i)), el('span', 'opt-text', o.text));
+        b.addEventListener('click', () => resolve(o.kind, b));
+        options.append(b);
+      });
+
+      const feedback = el('div', 'feedback');
+      screen.append(top, patience, options, feedback);
+      render(screen);
+
+      deadline = performance.now() + ROUND_SECONDS * 1000;
+      window.clearInterval(timer);
+      timer = window.setInterval(() => {
+        const left = Math.max(0, deadline - performance.now());
+        const ratio = left / (ROUND_SECONDS * 1000);
+        bar.style.transform = `scaleX(${ratio})`;
+        bar.classList.toggle('mid', ratio < 0.55);
+        bar.classList.toggle('low', ratio < 0.28);
+        secs.textContent = `${Math.ceil(left / 1000)}s`;
+        if (left <= 0) resolve('timeout');
+      }, 100);
+    }
+
+    function floatPoints(text: string, anchor: HTMLElement) {
+      if (reducedMotion) return;
+      const f = el('span', 'float-points', text);
+      anchor.append(f);
+      setTimeout(() => f.remove(), 1200);
+    }
+
+    function resolve(kind: Kind, chosen?: HTMLButtonElement) {
+      if (state !== 'round') return;
+      state = 'feedback';
+      window.clearInterval(timer);
+      const left = Math.max(0, deadline - performance.now()) / 1000;
+      streak = kind === 'best' ? streak + 1 : 0;
+      const bonus = kind === 'best' ? Math.round(left * 3) + (streak >= 2 ? 25 * (streak - 1) : 0) : 0;
+      const gained = POINTS[kind] + bonus;
+      score += gained;
+      stars.push(STARS[kind]);
+      if (kind === 'best') helped++;
+      updateHud();
+
+      const screen = stage.querySelector<HTMLElement>('.screen-round')!;
+      screen.querySelectorAll<HTMLButtonElement>('.option').forEach((b) => {
+        b.disabled = true;
+        if (b.dataset.kind === 'best') b.classList.add('is-best');
+      });
+      chosen?.classList.add('is-chosen', `is-${kind}`);
+
+      // Clientul reacționează
+      const face = screen.querySelector<HTMLElement>('.face')!;
+      const avatar = face.querySelector<HTMLImageElement>('.avatar')!;
+      avatar.src = icon(REACTION[kind]);
+      face.classList.add(`react-${kind}`);
+      if (gained > 0) floatPoints(`+${gained}`, face);
+
+      const fb = screen.querySelector<HTMLElement>('.feedback')!;
+      fb.className = `feedback show fb-${kind}`;
+      const last = index === rounds.length - 1;
+      const text = el('div', 'fb-text');
+      text.append(el('strong', 'verdict', t.verdict[kind]), el('span', '', ' ' + t.explain[kind]));
+      const next = el('button', 'next', (last ? t.finish : t.next) + '  ⏎') as HTMLButtonElement;
+      next.type = 'button';
+      onNext = () => { onNext = null; if (last) showResults(); else { index++; showRound(); } };
+      next.addEventListener('click', () => onNext?.());
+      fb.replaceChildren(text, next);
+      next.focus({ preventScroll: true });
+    }
+
+    function confetti() {
+      if (reducedMotion) return;
+      const colors = ['#f07a3c', '#fff585', '#2874fc', '#22c55e', '#e8463a', '#b48cff'];
+      const layer = el('div', 'confetti');
+      for (let i = 0; i < 48; i++) {
+        const p = el('i');
+        p.style.left = `${Math.random() * 100}%`;
+        p.style.background = colors[i % colors.length];
+        p.style.animationDelay = `${Math.random() * 0.6}s`;
+        p.style.animationDuration = `${1.6 + Math.random() * 1.2}s`;
+        p.style.transform = `rotate(${Math.random() * 360}deg)`;
+        layer.append(p);
+      }
+      cab.append(layer);
+      setTimeout(() => layer.remove(), 3200);
+    }
+
+    function showResults() {
+      state = 'result';
+      const csat = Math.round((stars.reduce((a, b) => a + b, 0) / (stars.length * 5)) * 100);
+      const level = csat >= 90 ? 3 : csat >= 70 ? 2 : csat >= 50 ? 1 : 0;
+      const prevBest = readBest();
+      const record = score > prevBest;
+      if (record) { writeBest(score); hud.best.textContent = pad(score); }
+
+      const screen = el('div', 'screen screen-result');
+      const left = el('div', 'result-badge');
+      left.append(img(LEVEL_ICON[level], 'level-icon', 96));
+      const ring = el('div', 'ring');
+      ring.style.setProperty('--p', String(csat));
+      ring.append(el('strong', '', `${csat}%`), el('span', '', 'CSAT'));
+      left.append(ring);
+
+      const right = el('div', 'result-info');
+      const title = el('h3', 'result-title', t.titles[level]);
+      title.tabIndex = -1; title.dataset.focus = '';
+      if (record && score > 0) right.append(el('span', 'record', '★ ' + t.newRecord));
+      const stats = el('div', 'result-stats');
+      const stat = (v: string, l: string) => { const s = el('span', 'stat'); s.append(el('b', '', v), el('small', '', l)); return s; };
+      stats.append(stat(pad(score), t.score), stat(`${helped}/${rounds.length}`, t.helped), stat(`${csat}%`, 'CSAT'));
+      const actions = el('div', 'actions');
+      const cta = el('a', 'cta', t.cta + ' →') as HTMLAnchorElement;
+      cta.href = contactUrl;
+      const again = el('button', 'again', '↻ ' + t.again) as HTMLButtonElement;
+      again.type = 'button';
+      again.addEventListener('click', start);
+      actions.append(cta, again);
+      right.append(title, stats, el('p', 'result-text', t.resultText), actions);
+
+      screen.append(left, right);
+      render(screen);
+      if (level >= 2) confetti();
+    }
+
+    // Scurtături de tastatură: A/B/C sau 1/2/3 pentru răspuns, Enter pentru continuare
+    cab.addEventListener('keydown', (e) => {
+      const k = e.key.toLowerCase();
+      if (state === 'round') {
+        const map: Record<string, string> = { '1': 'a', '2': 'b', '3': 'c' };
+        const key = map[k] ?? k;
+        const btn = stage.querySelector<HTMLButtonElement>(`.option[data-key="${key}"]`);
+        if (btn) { e.preventDefault(); btn.click(); }
+      } else if (state === 'feedback' && k === 'enter' && document.activeElement?.classList.contains('next') === false) {
+        e.preventDefault(); onNext?.();
+      }
+    });
+
+    cab.querySelector('.start')?.addEventListener('click', start);
+  });
+</script>
+
+<style>
+  .game { padding: 64px 0; background: var(--bg); scroll-margin-top: 60px; }
+  .game-head { text-align: center; max-width: 640px; margin: 0 auto 28px; }
+  .game-head h2 { font-size: clamp(1.8rem, 3vw, 2.3rem); margin: 0 0 8px; }
+  .game-head p:last-child { margin: 0; color: var(--muted); }
+
+  /* „Consola” jocului */
+  .cabinet {
+    position: relative; overflow: hidden; max-width: 880px; margin: 0 auto; border-radius: 18px;
+    background: radial-gradient(circle at 15% 0%, #2b1a7a 0%, transparent 50%), radial-gradient(circle at 100% 100%, #0f3a8a 0%, transparent 55%), #0a1033;
+    color: #e6ebff; box-shadow: 0 0 0 3px #1d2a6b, 0 0 0 5px #f07a3c55, 0 24px 60px rgba(7, 16, 52, .35);
+  }
+  .cabinet::after { /* linii de scanare, efect retro */
+    content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .07;
+    background: repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px);
+  }
+
+  .hud { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 18px; background: rgba(0,0,0,.3); border-bottom: 1px solid rgba(255,255,255,.08); font-family: var(--font-head); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: #9fb0e8; }
+  .hud-item { display: inline-flex; align-items: center; gap: 6px; }
+  .hud b { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: .95rem; color: var(--yellow); letter-spacing: .05em; }
+  .hud-streak-wrap { opacity: .35; transition: opacity .2s, transform .2s; }
+  .hud-streak-wrap.hot { opacity: 1; transform: scale(1.1); }
+
+  .stage { position: relative; padding: 22px 24px 24px; min-height: 360px; display: flex; }
+  .stage :global(.screen) { width: 100%; }
+
+  /* Intro */
+  .screen-intro { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
+  .bell { animation: wobble 2.2s ease-in-out infinite; filter: drop-shadow(0 6px 16px rgba(255,200,80,.35)); }
+  @keyframes wobble { 0%, 100% { transform: rotate(0); } 10% { transform: rotate(-12deg); } 20% { transform: rotate(10deg); } 30% { transform: rotate(-6deg); } 40% { transform: rotate(0); } }
+  .avatars { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .avatar-mini { position: relative; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.08); animation: bob 2s ease-in-out infinite; }
+  .avatar-mini:nth-child(2) { animation-delay: .15s; } .avatar-mini:nth-child(3) { animation-delay: .3s; }
+  .avatar-mini:nth-child(4) { animation-delay: .45s; } .avatar-mini:nth-child(5) { animation-delay: .6s; }
+  .avatar-mini i { position: absolute; bottom: -4px; right: -4px; font-style: normal; font-family: var(--font-head); font-size: .62rem; font-weight: 700; background: var(--orange); color: #fff; padding: 2px 5px; border-radius: 6px; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .intro-rules { margin: 0; font-size: .85rem; color: #9fb0e8; }
+  .press-start {
+    margin-top: 4px; border: 0; cursor: pointer; padding: 14px 30px; border-radius: 999px;
+    font-family: var(--font-head); font-weight: 700; font-size: 1rem; letter-spacing: .14em; text-transform: uppercase;
+    color: #1a0b00; background: linear-gradient(180deg, #ffd166, #f07a3c); box-shadow: 0 6px 0 #a3420f, 0 0 24px rgba(240,122,60,.55);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .press-start:active { transform: translateY(4px); box-shadow: 0 2px 0 #a3420f; }
+  @keyframes pulse { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.15); } }
+
+  /* Rundă */
+  .stage :global(.customer) { display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: start; margin-bottom: 14px; }
+  .stage :global(.face) { position: relative; width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.08); }
+  .stage :global(.avatar) { transition: transform .25s; }
+  .stage :global(.react-best .avatar) { animation: jump .5s ease; }
+  .stage :global(.react-bad .avatar), .stage :global(.react-timeout .avatar) { animation: shake .4s ease; }
+  @keyframes jump { 40% { transform: translateY(-10px) scale(1.15); } }
+  @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  .stage :global(.lang-badge) { position: absolute; bottom: -2px; right: -4px; font-family: var(--font-head); font-size: .7rem; font-weight: 700; background: var(--orange); color: #fff; padding: 2px 6px; border-radius: 6px; }
+  .stage :global(.meta) { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+  .stage :global(.meta strong) { color: #fff; font-family: var(--font-head); outline: none; }
+  .stage :global(.chips) { display: flex; gap: 6px; flex-wrap: wrap; }
+  .stage :global(.chip) { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; padding: 2px 8px; border-radius: 99px; background: rgba(255,255,255,.1); color: #c9d2f5; }
+  .stage :global(.bubble) { background: #fff; color: var(--text); border-radius: 4px 14px 14px 14px; padding: 10px 14px; }
+  .stage :global(.original) { margin: 0; font-weight: 600; color: var(--navy); font-size: .98rem; }
+  .stage :global(.translation) { margin: 6px 0 0; font-size: .82rem; color: var(--muted); }
+  .stage :global(.ai) { font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--indigo); background: #e8e4ff; padding: 2px 5px; border-radius: 4px; }
+
+  .stage :global(.patience) { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; margin-bottom: 14px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #9fb0e8; font-family: var(--font-head); }
+  .stage :global(.patience-track) { height: 10px; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; }
+  .stage :global(.patience-bar) { height: 100%; width: 100%; transform-origin: left; background: linear-gradient(90deg, #22c55e, #7ee787); transition: transform .1s linear; border-radius: 99px; }
+  .stage :global(.patience-bar.mid) { background: linear-gradient(90deg, #f5b400, #ffd166); }
+  .stage :global(.patience-bar.low) { background: linear-gradient(90deg, #e8463a, #ff7a6b); animation: blink .5s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .55; } }
+  .stage :global(.patience-secs) { font-family: ui-monospace, Consolas, monospace; color: var(--yellow); font-size: .85rem; }
+
+  .stage :global(.options) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stage :global(.option) {
+    position: relative; display: flex; flex-direction: column; gap: 8px; text-align: left; cursor: pointer;
+    font: inherit; font-size: .84rem; line-height: 1.45; color: #e6ebff; padding: 12px 12px 14px;
+    background: rgba(255,255,255,.06); border: 2px solid rgba(255,255,255,.14); border-radius: 12px;
+    transition: transform .12s, border-color .15s, background .15s;
+  }
+  .stage :global(.option:hover:not(:disabled)) { transform: translateY(-3px); border-color: var(--yellow); background: rgba(255,245,133,.08); }
+  .stage :global(.option:disabled) { cursor: default; opacity: .4; }
+  .stage :global(.key) { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 6px; font-family: var(--font-head); font-weight: 700; font-size: .8rem; color: #1a0b00; background: var(--yellow); box-shadow: 0 3px 0 #b8a400; }
+  .stage :global(.option.is-best) { opacity: 1; border-color: #22c55e; background: rgba(34,197,94,.14); }
+  .stage :global(.option.is-chosen.is-ok) { opacity: 1; border-color: #f5b400; background: rgba(245,180,0,.14); }
+  .stage :global(.option.is-chosen.is-bad) { opacity: 1; border-color: #e8463a; background: rgba(232,70,58,.16); }
+
+  .stage :global(.float-points) { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-family: var(--font-head); font-weight: 800; font-size: 1.3rem; color: var(--yellow); text-shadow: 0 0 12px rgba(255,209,102,.8); pointer-events: none; animation: floatUp 1.2s ease-out forwards; white-space: nowrap; }
+  @keyframes floatUp { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -48px); } }
+
+  .stage :global(.feedback) { display: none; margin-top: 12px; padding: 10px 12px; border-radius: 10px; align-items: center; gap: 12px; justify-content: space-between; }
+  .stage :global(.feedback.show) { display: flex; }
+  .stage :global(.fb-text) { font-size: .85rem; }
+  .stage :global(.verdict) { font-family: var(--font-head); letter-spacing: .04em; }
+  .stage :global(.fb-best) { background: rgba(34,197,94,.15); } .stage :global(.fb-best .verdict) { color: #7ee787; }
+  .stage :global(.fb-ok) { background: rgba(245,180,0,.15); } .stage :global(.fb-ok .verdict) { color: #ffd166; }
+  .stage :global(.fb-bad), .stage :global(.fb-timeout) { background: rgba(232,70,58,.16); }
+  .stage :global(.fb-bad .verdict), .stage :global(.fb-timeout .verdict) { color: #ff8a7f; }
+  .stage :global(.next) { flex: none; border: 0; cursor: pointer; padding: 10px 16px; border-radius: 8px; font-family: var(--font-head); font-weight: 700; font-size: .85rem; color: #1a0b00; background: linear-gradient(180deg, #ffd166, #f07a3c); box-shadow: 0 4px 0 #a3420f; }
+  .stage :global(.next:active) { transform: translateY(3px); box-shadow: 0 1px 0 #a3420f; }
+
+  /* Rezultat */
+  .stage :global(.screen-result) { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; }
+  .stage :global(.result-badge) { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .stage :global(.level-icon) { filter: drop-shadow(0 8px 20px rgba(255,209,102,.4)); animation: jump .7s ease; }
+  .stage :global(.ring) { --p: 0; width: 104px; height: 104px; border-radius: 50%; display: grid; place-content: center; text-align: center;
+    background: radial-gradient(closest-side, #0a1033 78%, transparent 79%), conic-gradient(var(--orange) calc(var(--p) * 1%), rgba(255,255,255,.12) 0); }
+  .stage :global(.ring strong) { font-family: var(--font-head); font-size: 1.6rem; color: #fff; line-height: 1; }
+  .stage :global(.ring span) { font-size: .65rem; letter-spacing: .12em; color: #9fb0e8; }
+  .stage :global(.record) { display: inline-block; font-family: var(--font-head); font-weight: 700; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: #1a0b00; background: var(--yellow); padding: 4px 10px; border-radius: 99px; margin-bottom: 8px; animation: pulse 1.2s infinite; }
+  .stage :global(.result-title) { color: #fff; font-size: 1.7rem; margin: 0 0 12px; outline: none; }
+  .stage :global(.result-stats) { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stage :global(.stat) { display: flex; flex-direction: column; background: rgba(255,255,255,.07); border-radius: 10px; padding: 8px 14px; min-width: 96px; }
+  .stage :global(.stat b) { font-family: ui-monospace, Consolas, monospace; color: var(--yellow); font-size: 1.1rem; }
+  .stage :global(.stat small) { font-size: .7rem; color: #9fb0e8; }
+  .stage :global(.result-text) { font-size: .9rem; color: #c9d2f5; margin: 0 0 16px; }
+  .stage :global(.actions) { display: flex; gap: 10px; flex-wrap: wrap; }
+  .stage :global(.cta) { text-decoration: none; padding: 12px 22px; border-radius: 999px; font-family: var(--font-head); font-weight: 700; color: #fff; background: var(--gradient-cta); }
+  .stage :global(.again) { cursor: pointer; padding: 12px 20px; border-radius: 999px; font: inherit; font-family: var(--font-head); font-weight: 600; color: #e6ebff; background: transparent; border: 1px solid rgba(255,255,255,.25); }
+
+  .cabinet :global(.confetti) { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+  .cabinet :global(.confetti i) { position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; animation-name: fall; animation-timing-function: ease-in; animation-fill-mode: forwards; }
+  @keyframes fall { to { top: 110%; transform: rotate(720deg); } }
+
+  @media (max-width: 760px) {
+    .game { padding: 48px 0; }
+    .stage { padding: 16px 14px 18px; min-height: 0; }
+    .hud { font-size: .65rem; padding: 8px 12px; }
+    .stage :global(.options) { grid-template-columns: 1fr; }
+    .stage :global(.option) { flex-direction: row; align-items: flex-start; }
+    .stage :global(.customer) { grid-template-columns: 60px 1fr; }
+    .stage :global(.face) { width: 60px; height: 60px; }
+    .stage :global(.avatar) { width: 48px; height: 48px; }
+    .stage :global(.feedback.show) { flex-direction: column; align-items: stretch; }
+    .stage :global(.screen-result) { grid-template-columns: 1fr; text-align: center; gap: 16px; }
+    .stage :global(.result-stats), .stage :global(.actions) { justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bell, .avatar-mini, .press-start { animation: none; }
+  }
+</style>

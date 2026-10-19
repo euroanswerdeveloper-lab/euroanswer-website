@@ -1,0 +1,11 @@
+---
+// Home în rusă — păstrează URL-ul paginii vechi din WordPress (/ru/компания-bpo/).
+// Rută dinamică pentru că numele fișierului ar conține caractere chirilice.
+import HomePage from '../../components/HomePage.astro';
+
+export function getStaticPaths() {
+  return [{ params: { slug: 'компания-bpo' } }];
+}
+---
+
+<HomePage lang="ru" />
