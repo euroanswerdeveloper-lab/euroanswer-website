@@ -19,6 +19,7 @@ const noindex = import.meta.env.PUBLIC_NOINDEX === 'true';
 const l = (lang in ui ? lang : 'en') as Lang;
 const t = ui[l];
 const home = homeUrl[l];
+const languageNames: Record<Lang, string> = { en: 'English', de: 'Deutsch', ru: 'Русский' };
 
 // Date structurate despre companie (Schema.org) — ajută Google și asistenții AI să înțeleagă cine suntem.
 // Păstrează aceste date identice cu cele de pe site și din directoare (GoodFirms, Clutch etc.).
@@ -122,11 +123,22 @@ const services = t.serviceItems;
           <a href="/blog/">{t.blog}</a>
           <a href="/join-the-team/">{t.join}</a>
           <a href={t.contactUrl}>{t.contact}</a>
-          <div class="lang-switch" role="group" aria-label="Language">
-            {(Object.keys(homeUrl) as Lang[]).map((code) => (
-              <a href={alternates?.[code] ?? homeUrl[code]} hreflang={code} lang={code} aria-current={code === l ? 'true' : undefined}>{code.toUpperCase()}</a>
-            ))}
-          </div>
+          <details class="lang-dd">
+            <summary aria-label="Language">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+              <span>{l.toUpperCase()}</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </summary>
+            <ul>
+              {(Object.keys(homeUrl) as Lang[]).map((code) => (
+                <li>
+                  <a href={alternates?.[code] ?? homeUrl[code]} hreflang={code} lang={code} aria-current={code === l ? 'true' : undefined}>
+                    <b>{code.toUpperCase()}</b> {languageNames[code]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
         </nav>
       </div>
     </header>
@@ -183,6 +195,15 @@ const services = t.serviceItems;
       toggle?.addEventListener('click', () => {
         const open = header?.classList.toggle('open');
         toggle.setAttribute('aria-expanded', String(open));
+      });
+
+      // Lista de limbi se închide la click în afara ei sau la Escape
+      const langDd = document.querySelector<HTMLDetailsElement>('.lang-dd');
+      document.addEventListener('click', (e) => {
+        if (langDd?.open && !langDd.contains(e.target as Node)) langDd.open = false;
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && langDd?.open) { langDd.open = false; langDd.querySelector('summary')?.focus(); }
       });
     </script>
   </body>
