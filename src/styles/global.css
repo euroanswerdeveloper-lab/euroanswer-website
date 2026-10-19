@@ -55,7 +55,7 @@ img { max-width: 100%; height: auto; }
 .topbar a { color: #fff; text-decoration: none; }
 .topbar .contact { display: flex; gap: 20px; flex-wrap: wrap; }
 /* Selector de limbă — în meniul principal (rămâne vizibil la derulare și apare și în meniul mobil) */
-.lang-switch { display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; flex: none; }
+.lang-switch { display: flex; border: 1px solid var(--border); border-radius: 0; overflow: hidden; flex: none; }
 .lang-switch a { padding: 6px 10px; font-family: var(--font-head); font-size: .8rem; font-weight: 600; color: var(--navy); text-decoration: none; line-height: 1; }
 .lang-switch a + a { border-left: 1px solid var(--border); }
 .lang-switch a:hover { background: var(--bg-soft); color: var(--indigo); }
