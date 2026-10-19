@@ -215,6 +215,23 @@ const services = t.serviceItems;
 
       // Lista de limbi se închide la click în afara ei sau la Escape
       const langDd = document.querySelector<HTMLDetailsElement>('.lang-dd');
+
+      // Desktop (mouse + ecran lat): lista se deschide la hover și rămâne deschisă cât timp mouse-ul e pe ea.
+      // Pe telefon/tabletă rămâne deschiderea la atingere.
+      const hoverMode = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)');
+      let closeTimer: number | undefined;
+      langDd?.addEventListener('mouseenter', () => {
+        if (!hoverMode.matches) return;
+        window.clearTimeout(closeTimer);
+        langDd.open = true;
+      });
+      langDd?.addEventListener('mouseleave', () => {
+        if (!hoverMode.matches) return;
+        closeTimer = window.setTimeout(() => { langDd.open = false; }, 250); // mică întârziere, ca să nu se închidă brusc
+      });
+      langDd?.querySelector('summary')?.addEventListener('click', (e) => {
+        if (hoverMode.matches) { e.preventDefault(); langDd.open = true; } // pe desktop click-ul nu o mai închide
+      });
       document.addEventListener('click', (e) => {
         if (langDd?.open && !langDd.contains(e.target as Node)) langDd.open = false;
       });

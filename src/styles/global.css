@@ -83,6 +83,8 @@ img { max-width: 100%; height: auto; }
   position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; min-width: 170px; margin: 0; padding: 6px 0; list-style: none;
   background: #fff; border: 1px solid var(--border); box-shadow: 0 12px 30px rgba(7, 16, 52, .12);
 }
+/* „Pod” invizibil peste spațiul dintre buton și listă, ca hover-ul să nu se întrerupă */
+.lang-dd ul::before { content: ''; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
 .lang-dd li a { display: flex; gap: 10px; align-items: baseline; padding: 9px 16px; color: var(--navy); text-decoration: none; font-size: .92rem; }
 .lang-dd li a b { font-family: var(--font-head); font-size: .75rem; color: var(--muted); width: 22px; }
 .lang-dd li a:hover { background: var(--bg-soft); color: var(--indigo); }
