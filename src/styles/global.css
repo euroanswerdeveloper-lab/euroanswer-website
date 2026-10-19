@@ -45,13 +45,13 @@ img { max-width: 100%; height: auto; }
 
 /* Butoane — pătrate (lățime = înălțime) pe tot site-ul. Mărimea se schimbă din --btn-size.
    Excepție: .btn-game (butonul spre joc), care rămâne lat și rotunjit. */
-:root { --btn-size: 95px; }
-@media (max-width: 560px) { :root { --btn-size: 84px; } }
+:root { --btn-size: 114px; }
+@media (max-width: 560px) { :root { --btn-size: 101px; } }
 .btn {
   display: inline-flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;
-  width: var(--btn-size); height: var(--btn-size); flex: none; padding: 8px;
+  width: var(--btn-size); height: var(--btn-size); flex: none; padding: 10px;
   text-align: center; white-space: normal; line-height: 1.25; overflow-wrap: anywhere;
-  font-family: var(--font-head); font-weight: 600; font-size: 0.8rem; text-decoration: none;
+  font-family: var(--font-head); font-weight: 600; font-size: 0.92rem; text-decoration: none;
   border: 1px solid transparent; cursor: pointer; transition: transform .15s, opacity .15s;
 }
 .btn.btn-game {
