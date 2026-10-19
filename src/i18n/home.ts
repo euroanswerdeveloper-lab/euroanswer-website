@@ -38,7 +38,7 @@ export const homeText = {
       h1: 'Multilingual BPO Company in Europe',
       tagline: 'Customer Operations, Handled with Care.',
       lead: 'We combine human connection, multilingual expertise and smart technology to deliver exceptional customer experiences for global brands.',
-      cta1: 'Discuss your needs', cta2: 'Explore our BPO services', cta3: 'Play our 60s GAME', imgAlt: 'Euroanswer customer experience orbit — omnichannel BPO services',
+      cta1: 'Discuss your needs', cta2: 'Explore our BPO services', cta3: 'Play our 100s GAME', imgAlt: 'Euroanswer customer experience orbit — omnichannel BPO services',
     },
     summary: '<strong>Euroanswer is a boutique BPO company</strong> founded in 2004 and headquartered in Bucharest, Romania. From delivery centres in <strong>Bucharest, Galati and Skopje</strong>, we provide BPO services — <a href="/customer-service-outsourcing/">customer service outsourcing</a>, technical support and <a href="/staffing-services/">staffing services</a> — in <strong>20+ languages</strong> for clients in 40 countries. We are <strong>ISO 9001 and ISO/IEC 27001 certified</strong>.',
     about: {
@@ -134,7 +134,7 @@ export const homeText = {
       h1: 'Mehrsprachiges BPO-Unternehmen in Europa',
       tagline: 'Kundenservice mit Sorgfalt.',
       lead: 'Wir verbinden menschliche Nähe, mehrsprachige Expertise und smarte Technologie zu herausragenden Kundenerlebnissen für globale Marken.',
-      cta1: 'Anfrage besprechen', cta2: 'Unsere BPO-Leistungen', cta3: 'Unser 60-Sekunden-SPIEL', imgAlt: 'Euroanswer Customer-Experience-Orbit — Omnichannel-BPO-Dienstleistungen',
+      cta1: 'Anfrage besprechen', cta2: 'Unsere BPO-Leistungen', cta3: 'Unser 100-Sekunden-SPIEL', imgAlt: 'Euroanswer Customer-Experience-Orbit — Omnichannel-BPO-Dienstleistungen',
     },
     summary: '<strong>Euroanswer ist ein Boutique-BPO-Unternehmen</strong>, gegründet 2004 mit Hauptsitz in Bukarest, Rumänien. Von unseren Standorten in <strong>Bukarest, Galați und Skopje</strong> aus erbringen wir BPO-Dienstleistungen — <a href="/de/kundensupport-auf-hochstem-niveau-mit-euroanswer-an-ihrer-seite/">Kundenservice-Outsourcing</a>, technischen Support und <a href="/staffing-services/">Personaldienstleistungen</a> — in <strong>über 20 Sprachen</strong> für Kunden in 40 Ländern. Wir sind <strong>nach ISO 9001 und ISO/IEC 27001 zertifiziert</strong>.',
     about: {
@@ -230,7 +230,7 @@ export const homeText = {
       h1: 'Многоязычная BPO-компания в Европе',
       tagline: 'Клиентский сервис с заботой.',
       lead: 'Мы объединяем человеческое участие, многоязычную экспертизу и умные технологии, чтобы создавать исключительный клиентский опыт для глобальных брендов.',
-      cta1: 'Обсудить задачу', cta2: 'Наши BPO-услуги', cta3: 'Сыграть в ИГРУ (60 сек)', imgAlt: 'Euroanswer — омниканальные BPO-услуги и клиентский опыт',
+      cta1: 'Обсудить задачу', cta2: 'Наши BPO-услуги', cta3: 'Сыграть в ИГРУ (100 сек)', imgAlt: 'Euroanswer — омниканальные BPO-услуги и клиентский опыт',
     },
     summary: '<strong>Euroanswer — бутиковая BPO-компания</strong>, основанная в 2004 году, с головным офисом в Бухаресте (Румыния). Из центров обслуживания в <strong>Бухаресте, Галаце и Скопье</strong> мы предоставляем BPO-услуги — <a href="/ru/обслуживание-клиентов/">аутсорсинг клиентской поддержки</a>, техническую поддержку и <a href="/staffing-services/">кадровые услуги</a> — на <strong>20+ языках</strong> для клиентов из 40 стран. Компания <strong>сертифицирована по ISO 9001 и ISO/IEC 27001</strong>.',
     about: {

@@ -1,6 +1,8 @@
 // Jocul „Handled or Helped?” de pe Home — texte EN / DE / RU.
 // Fiecare scenariu: mesajul clientului în limba lui originală (`original`), traducerea în limba
-// vizitatorului și trei răspunsuri: best = „Helped”, ok = „Handled”, bad = „Lost”.
+// vizitatorului și patru răspunsuri de lungimi apropiate, toate politicoase:
+//   best = „Helped” (rezolvă corect) · ok = „Handled” (politicos, dar problema rămâne)
+//   bad  = „Lost” (respinge clientul)   · trap = capcană (sună generos, dar e neautorizat sau nesigur)
 import type { Lang } from './ui';
 
 type Scenario = {
@@ -16,6 +18,7 @@ type Scenario = {
   best: Record<Lang, string>;
   ok: Record<Lang, string>;
   bad: Record<Lang, string>;
+  trap: Record<Lang, string>;
 };
 
 export const scenarios: Scenario[] = [
@@ -30,19 +33,24 @@ export const scenarios: Scenario[] = [
       ru: 'Мой заказ не пришёл уже 10 дней. Мне нужен подарок к пятнице!',
     },
     best: {
-      en: 'I’m sorry — I checked and your parcel is stuck at the depot. I’ve booked free express delivery for Thursday and emailed you the tracking link.',
-      de: 'Das tut mir leid — Ihr Paket hängt im Depot fest. Ich habe eine kostenlose Expresszustellung für Donnerstag gebucht und Ihnen den Tracking-Link gemailt.',
-      ru: 'Мне очень жаль — посылка застряла на складе. Я оформил(а) бесплатную экспресс-доставку на четверг и отправил(а) вам ссылку для отслеживания.',
+      en: 'Sorry for the wait. Tracking shows your parcel is stuck at the depot, so I’ve booked a free express re-delivery for Thursday and sent you the link.',
+      de: 'Entschuldigen Sie die Wartezeit. Laut Tracking hängt Ihr Paket im Depot fest — ich habe eine kostenlose Expresszustellung für Donnerstag gebucht und Ihnen den Link geschickt.',
+      ru: 'Простите за ожидание. По трекингу посылка застряла на складе — я оформил(а) бесплатную экспресс-доставку на четверг и отправил(а) вам ссылку.',
     },
     ok: {
-      en: 'Thank you for contacting us. Delivery times may vary. Please allow 5–7 more working days.',
-      de: 'Vielen Dank für Ihre Nachricht. Lieferzeiten können variieren. Bitte warten Sie noch 5–7 Werktage.',
-      ru: 'Спасибо за обращение. Сроки доставки могут меняться. Пожалуйста, подождите ещё 5–7 рабочих дней.',
+      en: 'Sorry for the delay! Deliveries can take up to 14 days in busy periods. I’ve added a note to your order and will email you as soon as it moves.',
+      de: 'Entschuldigung für die Verzögerung! In Stoßzeiten kann die Lieferung bis zu 14 Tage dauern. Ich habe eine Notiz hinterlegt und melde mich, sobald sich etwas tut.',
+      ru: 'Извините за задержку! В пиковые периоды доставка занимает до 14 дней. Я добавил(а) пометку к заказу и напишу вам, как только он сдвинется.',
     },
     bad: {
-      en: 'Please contact the courier company directly.',
-      de: 'Bitte wenden Sie sich direkt an den Paketdienst.',
-      ru: 'Пожалуйста, обратитесь напрямую в курьерскую службу.',
+      en: 'I understand your frustration. The parcel is now with the courier, so they’re best placed to help — here is their customer service number.',
+      de: 'Ich verstehe Ihren Ärger. Das Paket liegt jetzt beim Paketdienst, der Ihnen am besten helfen kann — hier ist dessen Kundenservice-Nummer.',
+      ru: 'Понимаю ваше раздражение. Посылка сейчас у курьерской службы, они лучше всего помогут — вот номер их поддержки.',
+    },
+    trap: {
+      en: 'No problem — I’ll ship a second parcel by express today and refund the first one too, so you’re covered whatever happens.',
+      de: 'Kein Problem — ich schicke heute ein zweites Paket per Express und erstatte das erste auch, dann sind Sie auf jeden Fall abgesichert.',
+      ru: 'Без проблем — я сегодня отправлю вторую посылку экспрессом и верну деньги за первую, так что вы застрахованы в любом случае.',
     },
   },
   {
@@ -56,19 +64,24 @@ export const scenarios: Scenario[] = [
       ru: 'Не могу войти в приложение, а мне сегодня нужно оплатить аренду!',
     },
     best: {
-      en: 'Let’s fix it right now: I’ve sent a secure reset link to your phone, and I’ll stay in the chat until your payment goes through.',
-      de: 'Das lösen wir sofort: Ich habe Ihnen einen sicheren Reset-Link aufs Handy geschickt und bleibe im Chat, bis Ihre Zahlung durch ist.',
-      ru: 'Давайте решим это прямо сейчас: я отправил(а) защищённую ссылку для сброса на ваш телефон и останусь в чате, пока платёж не пройдёт.',
+      en: 'Let’s get you in now. I’ve verified your identity and sent a secure reset link by SMS — I’ll stay in the chat until your rent payment goes through.',
+      de: 'Lassen Sie uns das jetzt lösen. Ich habe Ihre Identität geprüft und einen sicheren Reset-Link per SMS geschickt — ich bleibe im Chat, bis die Miete bezahlt ist.',
+      ru: 'Давайте решим это сейчас. Я подтвердил(а) вашу личность и отправил(а) защищённую ссылку для сброса по SMS — останусь в чате, пока платёж не пройдёт.',
     },
     ok: {
-      en: 'Please reinstall the app and try again later.',
-      de: 'Bitte installieren Sie die App neu und versuchen Sie es später noch einmal.',
-      ru: 'Пожалуйста, переустановите приложение и попробуйте позже.',
+      en: 'Sorry about that! Please reset your password from the login screen. If it still doesn’t work, our team can help you again tomorrow morning.',
+      de: 'Das tut mir leid! Bitte setzen Sie Ihr Passwort über den Login-Bildschirm zurück. Klappt es nicht, hilft Ihnen unser Team morgen früh weiter.',
+      ru: 'Сожалею! Пожалуйста, сбросьте пароль на экране входа. Если не получится, наша команда поможет вам завтра утром.',
     },
     bad: {
-      en: 'For security reasons we can’t help via chat. Please visit a branch.',
-      de: 'Aus Sicherheitsgründen können wir im Chat nicht helfen. Bitte besuchen Sie eine Filiale.',
-      ru: 'По соображениям безопасности мы не можем помочь в чате. Пожалуйста, обратитесь в отделение.',
+      en: 'For your security we can’t discuss account access in chat. Please visit your nearest branch with ID during opening hours.',
+      de: 'Aus Sicherheitsgründen können wir den Kontozugang nicht im Chat besprechen. Bitte besuchen Sie mit Ausweis eine Filiale während der Öffnungszeiten.',
+      ru: 'В целях безопасности мы не обсуждаем доступ к счёту в чате. Пожалуйста, обратитесь в отделение с документом в часы работы.',
+    },
+    trap: {
+      en: 'No problem — just send me your card number and PIN here in the chat, and I’ll make the rent payment for you right away.',
+      de: 'Kein Problem — schicken Sie mir einfach Kartennummer und PIN hier im Chat, dann überweise ich die Miete sofort für Sie.',
+      ru: 'Без проблем — просто пришлите мне номер карты и PIN прямо в чат, и я сразу оплачу аренду за вас.',
     },
   },
   {
@@ -82,19 +95,24 @@ export const scenarios: Scenario[] = [
       ru: 'Мой рейс отменили, и я застряла в аэропорту с двумя детьми.',
     },
     best: {
-      en: 'I’m so sorry. I’ve rebooked you on the 18:40 flight with seats together and added meal vouchers for all three of you — they’re on your phone now.',
-      de: 'Das tut mir sehr leid. Ich habe Sie auf den Flug um 18:40 Uhr mit Sitzplätzen nebeneinander umgebucht und Essensgutscheine für Sie alle drei hinzugefügt — sie sind schon auf Ihrem Handy.',
-      ru: 'Мне очень жаль. Я пересадил(а) вас на рейс в 18:40 с местами рядом и добавил(а) талоны на питание для всех троих — они уже у вас в телефоне.',
+      en: 'I’m so sorry. I’ve rebooked all three of you on tonight’s 18:40 flight with seats together, and added meal vouchers to your app.',
+      de: 'Das tut mir sehr leid. Ich habe Sie alle drei auf den Flug heute um 18:40 Uhr mit Plätzen nebeneinander umgebucht und Essensgutscheine in Ihre App gelegt.',
+      ru: 'Мне очень жаль. Я пересадил(а) всех троих на сегодняшний рейс в 18:40 с местами рядом и добавил(а) талоны на питание в ваше приложение.',
     },
     ok: {
-      en: 'You can request a refund using the form on our website within 30 days.',
-      de: 'Sie können innerhalb von 30 Tagen über das Formular auf unserer Website eine Erstattung beantragen.',
-      ru: 'Вы можете запросить возврат через форму на нашем сайте в течение 30 дней.',
+      en: 'I’m sorry to hear that. You’re entitled to a refund or a free rebooking — I’ve emailed you the form so you can choose what suits you best.',
+      de: 'Das tut mir leid. Sie haben Anspruch auf Erstattung oder kostenlose Umbuchung — ich habe Ihnen das Formular gemailt, damit Sie wählen können.',
+      ru: 'Мне жаль это слышать. Вы имеете право на возврат или бесплатную перебронь — я отправил(а) вам форму по email, чтобы вы выбрали.',
     },
     bad: {
-      en: 'Cancellations are decided by the airline, not by us.',
-      de: 'Über Annullierungen entscheidet die Fluggesellschaft, nicht wir.',
-      ru: 'Решения об отмене принимает авиакомпания, а не мы.',
+      en: 'Cancellations are decided by the airline for operational reasons. Please follow the departures board for the latest updates.',
+      de: 'Annullierungen entscheidet die Fluggesellschaft aus betrieblichen Gründen. Bitte verfolgen Sie die Abflugtafel für aktuelle Informationen.',
+      ru: 'Решения об отмене принимает авиакомпания по операционным причинам. Пожалуйста, следите за табло вылетов.',
+    },
+    trap: {
+      en: 'Don’t worry — book any hotel and flight you like tonight and we’ll reimburse everything in full, no questions asked.',
+      de: 'Keine Sorge — buchen Sie heute Abend ein beliebiges Hotel und einen Flug, wir erstatten alles in voller Höhe, ohne Fragen.',
+      ru: 'Не волнуйтесь — бронируйте сегодня любой отель и рейс, мы полностью всё компенсируем без вопросов.',
     },
   },
   {
@@ -108,19 +126,24 @@ export const scenarios: Scenario[] = [
       ru: 'Я оплатил игровой набор и так его и не получил. Очень разочарован 😡',
     },
     best: {
-      en: 'That’s frustrating — sorry! I found your payment, added the bundle to your account plus a small bonus for the trouble. Can you check now?',
-      de: 'Das ist ärgerlich — sorry! Ich habe Ihre Zahlung gefunden, das Paket gutgeschrieben und einen kleinen Bonus obendrauf gelegt. Können Sie kurz nachsehen?',
-      ru: 'Понимаю, как это неприятно — извините! Я нашёл(а) ваш платёж, зачислил(а) набор и добавил(а) небольшой бонус за неудобства. Проверите?',
+      en: 'Sorry, that’s frustrating! I found your payment, added the bundle to your account and included a small bonus for the trouble. Can you check now?',
+      de: 'Sorry, das ist ärgerlich! Ich habe Ihre Zahlung gefunden, das Paket gutgeschrieben und einen kleinen Bonus dazugelegt. Können Sie kurz nachsehen?',
+      ru: 'Извините, это неприятно! Я нашёл(а) ваш платёж, зачислил(а) набор и добавил(а) небольшой бонус за неудобства. Проверите?',
     },
     ok: {
-      en: 'We have forwarded your request to the relevant department. Ticket #48213.',
-      de: 'Wir haben Ihre Anfrage an die zuständige Abteilung weitergeleitet. Ticket #48213.',
-      ru: 'Мы передали ваш запрос в соответствующий отдел. Тикет #48213.',
+      en: 'Thanks for reporting this. I’ve opened ticket #48213 with our payments team — missing bundles are usually added within 72 hours.',
+      de: 'Danke für den Hinweis. Ich habe Ticket #48213 bei unserem Zahlungsteam eröffnet — fehlende Pakete werden meist innerhalb von 72 Stunden gutgeschrieben.',
+      ru: 'Спасибо, что сообщили. Я открыл(а) тикет #48213 в платёжном отделе — недостающие наборы обычно зачисляются в течение 72 часов.',
     },
     bad: {
-      en: 'In-game purchases are non-refundable according to our Terms.',
-      de: 'In-Game-Käufe sind laut unseren AGB nicht erstattungsfähig.',
-      ru: 'Согласно нашим условиям, внутриигровые покупки не возвращаются.',
+      en: 'Under our terms, in-game purchases are final. If you believe there was an error, please contact your app store directly.',
+      de: 'Laut unseren AGB sind In-Game-Käufe endgültig. Wenn Sie einen Fehler vermuten, wenden Sie sich bitte direkt an Ihren App Store.',
+      ru: 'По нашим условиям внутриигровые покупки окончательны. Если считаете, что произошла ошибка, обратитесь напрямую в магазин приложений.',
+    },
+    trap: {
+      en: 'Happy to fix it — just send me your account login and password in a private message and I’ll log in as you to check.',
+      de: 'Gern behebe ich das — schicken Sie mir einfach Login und Passwort per Privatnachricht, dann melde ich mich als Sie an und prüfe es.',
+      ru: 'С радостью исправлю — просто пришлите мне логин и пароль в личные сообщения, я зайду под вашим аккаунтом и проверю.',
     },
   },
   {
@@ -135,36 +158,42 @@ export const scenarios: Scenario[] = [
     },
     best: {
       en: 'Good catch — a duplicate licence was billed by mistake. I’ve issued a credit note for the difference and set an alert so it can’t happen again.',
-      de: 'Gut aufgepasst — eine Lizenz wurde versehentlich doppelt berechnet. Ich habe eine Gutschrift über die Differenz erstellt und eine Warnung eingerichtet, damit das nicht wieder passiert.',
-      ru: 'Хорошо, что вы заметили: лицензию по ошибке выставили дважды. Я оформил(а) кредит-ноту на разницу и настроил(а) оповещение, чтобы это не повторилось.',
+      de: 'Gut aufgepasst — eine Lizenz wurde versehentlich doppelt berechnet. Ich habe eine Gutschrift über die Differenz erstellt und eine Warnung eingerichtet.',
+      ru: 'Хорошо, что заметили: лицензию по ошибке выставили дважды. Я оформил(а) кредит-ноту на разницу и настроил(а) оповещение, чтобы это не повторилось.',
     },
     ok: {
-      en: 'Invoices are generated automatically by our billing system.',
-      de: 'Rechnungen werden automatisch von unserem Abrechnungssystem erstellt.',
-      ru: 'Счета формируются автоматически нашей биллинговой системой.',
+      en: 'Thanks for flagging it. I’ve forwarded your invoice to our billing team, who will review it and get back to you within 5 working days.',
+      de: 'Danke für den Hinweis. Ich habe Ihre Rechnung an unser Abrechnungsteam weitergeleitet, das sie prüft und sich innerhalb von 5 Werktagen meldet.',
+      ru: 'Спасибо, что сообщили. Я передал(а) счёт в отдел биллинга — они проверят его и ответят в течение 5 рабочих дней.',
     },
     bad: {
-      en: 'Please pay the invoice first — disputes are reviewed after payment.',
-      de: 'Bitte zahlen Sie zuerst die Rechnung — Einwände prüfen wir nach Zahlungseingang.',
-      ru: 'Сначала оплатите счёт — спорные вопросы рассматриваются после оплаты.',
+      en: 'Invoices are generated automatically from your plan, so the amount should be correct. Please pay by the due date to avoid late fees.',
+      de: 'Rechnungen werden automatisch aus Ihrem Tarif erstellt, der Betrag sollte also stimmen. Bitte zahlen Sie fristgerecht, um Gebühren zu vermeiden.',
+      ru: 'Счета формируются автоматически по вашему тарифу, так что сумма должна быть верной. Оплатите вовремя, чтобы избежать пени.',
+    },
+    trap: {
+      en: 'Just ignore this invoice entirely — I’ll cancel it in the system now and you won’t need to pay anything this month.',
+      de: 'Ignorieren Sie diese Rechnung einfach — ich storniere sie jetzt im System, und Sie müssen diesen Monat gar nichts zahlen.',
+      ru: 'Просто не обращайте внимания на этот счёт — я сейчас аннулирую его в системе, и в этом месяце платить ничего не нужно.',
     },
   },
 ];
 
 export const gameText = {
   en: {
-    eyebrow: 'Play · 60 seconds', title: 'Handled or helped?',
-    intro: 'Be a Euroanswer agent for a minute. Five customers from five countries, five channels. Pick the reply you’d send — before the customer gives up.',
-    rules: ['5 customer messages in their own language', 'AI translation, just like our agents get', '20 seconds per customer — speed earns bonus points'],
-    press: 'Press start', best: 'Best', streak: 'Streak', patience: 'Customer patience', newRecord: 'New record!', level: 'Level',
+    eyebrow: 'Play · 100 seconds', title: 'Handled or helped?',
+    intro: 'Be a Euroanswer agent for 100 seconds. Five customers from five countries, five channels — and four replies that all sound polite. Only one truly helps.',
+    rules: ['5 customer messages in their own language', '4 replies each — watch out for traps', '100 seconds for the whole shift — speed earns bonus points'],
+    press: 'Press start', best: 'Best', streak: 'Streak', patience: 'Shift time', newRecord: 'New record!', level: 'Level',
     start: 'Start shift', round: 'Customer', of: 'of', translated: 'AI translation', pick: 'Choose your reply:',
     timeLeft: 'seconds left', next: 'Next customer →', finish: 'See my results →',
-    verdict: { best: 'Helped ✓', ok: 'Handled', bad: 'Lost ✕', timeout: 'Too slow ✕' },
+    verdict: { best: 'Helped ✓', ok: 'Handled', bad: 'Lost ✕', trap: 'Trap ✕', timeout: 'Shift over ✕' },
     explain: {
-      best: 'You owned the problem and solved it in one contact. That’s how loyalty is built.',
+      best: 'You owned the problem and solved it in one contact — safely and within policy. That’s how loyalty is built.',
       ok: 'Polite — but the customer still has the problem and will have to contact you again.',
       bad: 'The customer feels dismissed. They’re probably looking at your competitors right now.',
-      timeout: 'The customer waited too long and left. Response time matters.',
+      trap: 'It sounds helpful, but it’s unauthorised or unsafe — it costs your client money or puts the customer’s data at risk.',
+      timeout: 'Time ran out before this customer got an answer. Response time matters.',
     },
     score: 'Score', csat: 'Customer satisfaction (CSAT)', helped: 'customers truly helped',
     titles: ['Let’s train together', 'Promising trainee', 'Senior agent', 'CX champion'],
@@ -172,18 +201,19 @@ export const gameText = {
     cta: 'Talk to us', again: 'Play again',
   },
   de: {
-    eyebrow: 'Spielen · 60 Sekunden', title: 'Abgewickelt oder geholfen?',
-    intro: 'Seien Sie eine Minute lang Euroanswer-Agent. Fünf Kunden aus fünf Ländern, fünf Kanäle. Wählen Sie die Antwort, die Sie senden würden — bevor der Kunde aufgibt.',
-    rules: ['5 Kundennachrichten in ihrer eigenen Sprache', 'KI-Übersetzung, wie bei unseren Agents', '20 Sekunden pro Kunde — Tempo bringt Bonuspunkte'],
-    press: 'Start drücken', best: 'Rekord', streak: 'Serie', patience: 'Geduld des Kunden', newRecord: 'Neuer Rekord!', level: 'Level',
+    eyebrow: 'Spielen · 100 Sekunden', title: 'Abgewickelt oder geholfen?',
+    intro: 'Seien Sie 100 Sekunden lang Euroanswer-Agent. Fünf Kunden aus fünf Ländern, fünf Kanäle — und vier Antworten, die alle höflich klingen. Nur eine hilft wirklich.',
+    rules: ['5 Kundennachrichten in ihrer eigenen Sprache', 'je 4 Antworten — Vorsicht vor Fallen', '100 Sekunden für die ganze Schicht — Tempo bringt Bonuspunkte'],
+    press: 'Start drücken', best: 'Rekord', streak: 'Serie', patience: 'Schichtzeit', newRecord: 'Neuer Rekord!', level: 'Level',
     start: 'Schicht starten', round: 'Kunde', of: 'von', translated: 'KI-Übersetzung', pick: 'Wählen Sie Ihre Antwort:',
     timeLeft: 'Sekunden übrig', next: 'Nächster Kunde →', finish: 'Ergebnis ansehen →',
-    verdict: { best: 'Geholfen ✓', ok: 'Abgewickelt', bad: 'Verloren ✕', timeout: 'Zu langsam ✕' },
+    verdict: { best: 'Geholfen ✓', ok: 'Abgewickelt', bad: 'Verloren ✕', trap: 'Falle ✕', timeout: 'Schicht vorbei ✕' },
     explain: {
-      best: 'Sie haben das Problem übernommen und mit einem Kontakt gelöst. So entsteht Kundenbindung.',
+      best: 'Sie haben das Problem übernommen und mit einem Kontakt gelöst — sicher und regelkonform. So entsteht Kundenbindung.',
       ok: 'Höflich — aber der Kunde hat das Problem immer noch und muss sich erneut melden.',
       bad: 'Der Kunde fühlt sich abgewimmelt. Wahrscheinlich schaut er sich gerade bei der Konkurrenz um.',
-      timeout: 'Der Kunde hat zu lange gewartet und ist gegangen. Reaktionszeit zählt.',
+      trap: 'Klingt hilfsbereit, ist aber nicht autorisiert oder unsicher — es kostet Ihren Auftraggeber Geld oder gefährdet die Daten des Kunden.',
+      timeout: 'Die Zeit lief ab, bevor dieser Kunde eine Antwort bekam. Reaktionszeit zählt.',
     },
     score: 'Punkte', csat: 'Kundenzufriedenheit (CSAT)', helped: 'Kunden wirklich geholfen',
     titles: ['Wir trainieren gemeinsam', 'Vielversprechender Trainee', 'Senior Agent', 'CX-Champion'],
@@ -191,18 +221,19 @@ export const gameText = {
     cta: 'Sprechen Sie mit uns', again: 'Nochmal spielen',
   },
   ru: {
-    eyebrow: 'Игра · 60 секунд', title: 'Обработать или помочь?',
-    intro: 'Побудьте оператором Euroanswer одну минуту. Пять клиентов из пяти стран, пять каналов. Выберите ответ, который вы бы отправили, — пока клиент не ушёл.',
-    rules: ['5 сообщений клиентов на их родном языке', 'ИИ-перевод — как у наших операторов', '20 секунд на клиента — за скорость начисляются бонусы'],
-    press: 'Нажмите старт', best: 'Рекорд', streak: 'Серия', patience: 'Терпение клиента', newRecord: 'Новый рекорд!', level: 'Уровень',
+    eyebrow: 'Игра · 100 секунд', title: 'Обработать или помочь?',
+    intro: 'Побудьте оператором Euroanswer 100 секунд. Пять клиентов из пяти стран, пять каналов — и четыре вежливых ответа. Но по-настоящему помогает только один.',
+    rules: ['5 сообщений клиентов на их родном языке', 'по 4 ответа — остерегайтесь ловушек', '100 секунд на всю смену — за скорость начисляются бонусы'],
+    press: 'Нажмите старт', best: 'Рекорд', streak: 'Серия', patience: 'Время смены', newRecord: 'Новый рекорд!', level: 'Уровень',
     start: 'Начать смену', round: 'Клиент', of: 'из', translated: 'ИИ-перевод', pick: 'Выберите ответ:',
     timeLeft: 'сек. осталось', next: 'Следующий клиент →', finish: 'Мои результаты →',
-    verdict: { best: 'Помог ✓', ok: 'Обработал', bad: 'Потерян ✕', timeout: 'Слишком медленно ✕' },
+    verdict: { best: 'Помог ✓', ok: 'Обработал', bad: 'Потерян ✕', trap: 'Ловушка ✕', timeout: 'Смена окончена ✕' },
     explain: {
-      best: 'Вы взяли проблему на себя и решили её за одно обращение. Так и создаётся лояльность.',
+      best: 'Вы взяли проблему на себя и решили её за одно обращение — безопасно и по правилам. Так и создаётся лояльность.',
       ok: 'Вежливо — но проблема клиента не решена, и ему придётся обратиться снова.',
       bad: 'Клиент чувствует, что от него отмахнулись. Скорее всего, он уже смотрит на конкурентов.',
-      timeout: 'Клиент ждал слишком долго и ушёл. Скорость ответа важна.',
+      trap: 'Звучит заботливо, но это неразрешено или небезопасно — заказчик теряет деньги, а данные клиента оказываются под угрозой.',
+      timeout: 'Время вышло, прежде чем клиент получил ответ. Скорость ответа важна.',
     },
     score: 'Очки', csat: 'Удовлетворённость клиентов (CSAT)', helped: 'клиентам действительно помогли',
     titles: ['Потренируемся вместе', 'Перспективный стажёр', 'Старший оператор', 'Чемпион CX'],

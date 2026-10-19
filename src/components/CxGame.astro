@@ -28,6 +28,7 @@ const payload = {
       { kind: 'best', text: s.best[lang] },
       { kind: 'ok', text: s.ok[lang] },
       { kind: 'bad', text: s.bad[lang] },
+      { kind: 'trap', text: s.trap[lang] },
     ],
   })),
 };
@@ -66,17 +67,18 @@ const payload = {
 </section>
 
 <script>
-  type Kind = 'best' | 'ok' | 'bad' | 'timeout';
+  type Kind = 'best' | 'ok' | 'bad' | 'trap' | 'timeout';
   type Option = { kind: Exclude<Kind, 'timeout'>; text: string };
   type Round = {
     code: string; name: string; avatar: string; channelIcon: string; sectorIcon: string;
     channel: string; sector: string; original: string; translation: string | null; options: Option[];
   };
 
-  const ROUND_SECONDS = 20;
-  const POINTS: Record<Kind, number> = { best: 100, ok: 40, bad: 0, timeout: 0 };
-  const STARS: Record<Kind, number> = { best: 5, ok: 3, bad: 1, timeout: 1 };
-  const REACTION: Record<Kind, string> = { best: 'love', ok: 'neutral', bad: 'steam', timeout: 'hourglass' };
+  const SHIFT_SECONDS = 100; // timp total pentru toată tura (toți clienții); ceasul stă cât se citește explicația
+  const FAST_SECONDS = 20;   // răspunsurile bune date sub acest timp primesc bonus de viteză
+  const POINTS: Record<Kind, number> = { best: 100, ok: 40, bad: 0, trap: 0, timeout: 0 };
+  const STARS: Record<Kind, number> = { best: 5, ok: 3, bad: 1, trap: 1, timeout: 1 };
+  const REACTION: Record<Kind, string> = { best: 'love', ok: 'neutral', bad: 'steam', trap: 'steam', timeout: 'hourglass' };
   const LEVEL_ICON = ['seedling', 'sparkles', 'star-struck', 'trophy'];
   const BEST_KEY = 'euroanswer-game-best';
   const icon = (name: string) => `/game/icons/${name}.svg`;
@@ -97,7 +99,8 @@ const payload = {
       best: cab.querySelector<HTMLElement>('.hud-best')!,
     };
     let index = 0, score = 0, helped = 0, streak = 0, stars: number[] = [];
-    let timer: number | undefined, deadline = 0, state: 'intro' | 'round' | 'feedback' | 'result' = 'intro';
+    let timer: number | undefined, deadline = 0, roundStart = 0, remainingMs = SHIFT_SECONDS * 1000, timeUp = false;
+    let state: 'intro' | 'round' | 'feedback' | 'result' = 'intro';
     let onNext: (() => void) | null = null;
 
     const pad = (n: number) => String(n).padStart(4, '0');
@@ -131,6 +134,7 @@ const payload = {
 
     function start() {
       index = 0; score = 0; helped = 0; streak = 0; stars = [];
+      remainingMs = SHIFT_SECONDS * 1000; timeUp = false;
       showRound();
     }
 
@@ -163,12 +167,12 @@ const payload = {
       msg.append(meta, bubble);
       top.append(face, msg);
 
-      // Răbdarea clientului (cronometru)
+      // Timpul rămas din tură (comun pentru toți clienții)
       const patience = el('div', 'patience');
       const label = el('span', 'patience-label', t.patience);
       const track = el('div', 'patience-track');
       const bar = el('div', 'patience-bar');
-      const secs = el('span', 'patience-secs', `${ROUND_SECONDS}s`);
+      const secs = el('span', 'patience-secs', `${Math.ceil(remainingMs / 1000)}s`);
       track.append(bar);
       patience.append(label, track, secs);
 
@@ -190,16 +194,21 @@ const payload = {
       screen.append(top, patience, options, feedback);
       render(screen);
 
-      deadline = performance.now() + ROUND_SECONDS * 1000;
+      const paint = (left: number) => {
+        const ratio = left / (SHIFT_SECONDS * 1000);
+        bar.style.transform = `scaleX(${ratio})`;
+        bar.classList.toggle('mid', ratio < 0.5);
+        bar.classList.toggle('low', ratio < 0.2);
+        secs.textContent = `${Math.ceil(left / 1000)}s`;
+      };
+      paint(remainingMs);
+      roundStart = performance.now();
+      deadline = roundStart + remainingMs;
       window.clearInterval(timer);
       timer = window.setInterval(() => {
         const left = Math.max(0, deadline - performance.now());
-        const ratio = left / (ROUND_SECONDS * 1000);
-        bar.style.transform = `scaleX(${ratio})`;
-        bar.classList.toggle('mid', ratio < 0.55);
-        bar.classList.toggle('low', ratio < 0.28);
-        secs.textContent = `${Math.ceil(left / 1000)}s`;
-        if (left <= 0) resolve('timeout');
+        paint(left);
+        if (left <= 0) { timeUp = true; resolve('timeout'); }
       }, 100);
     }
 
@@ -214,9 +223,11 @@ const payload = {
       if (state !== 'round') return;
       state = 'feedback';
       window.clearInterval(timer);
-      const left = Math.max(0, deadline - performance.now()) / 1000;
+      const now = performance.now();
+      remainingMs = Math.max(0, deadline - now); // ceasul turei se oprește cât se citește explicația
+      const spent = (now - roundStart) / 1000;
       streak = kind === 'best' ? streak + 1 : 0;
-      const bonus = kind === 'best' ? Math.round(left * 3) + (streak >= 2 ? 25 * (streak - 1) : 0) : 0;
+      const bonus = kind === 'best' ? Math.max(0, Math.round((FAST_SECONDS - spent) * 3)) + (streak >= 2 ? 25 * (streak - 1) : 0) : 0;
       const gained = POINTS[kind] + bonus;
       score += gained;
       stars.push(STARS[kind]);
@@ -239,7 +250,7 @@ const payload = {
 
       const fb = screen.querySelector<HTMLElement>('.feedback')!;
       fb.className = `feedback show fb-${kind}`;
-      const last = index === rounds.length - 1;
+      const last = index === rounds.length - 1 || timeUp;
       const text = el('div', 'fb-text');
       text.append(el('strong', 'verdict', t.verdict[kind]), el('span', '', ' ' + t.explain[kind]));
       const next = el('button', 'next', (last ? t.finish : t.next) + '  ⏎') as HTMLButtonElement;
@@ -269,6 +280,8 @@ const payload = {
 
     function showResults() {
       state = 'result';
+      // Clienții la care nu s-a mai ajuns (tura s-a terminat) contează ca nemulțumiți
+      while (stars.length < rounds.length) stars.push(STARS.timeout);
       const csat = Math.round((stars.reduce((a, b) => a + b, 0) / (stars.length * 5)) * 100);
       const level = csat >= 90 ? 3 : csat >= 70 ? 2 : csat >= 50 ? 1 : 0;
       const prevBest = readBest();
@@ -304,11 +317,11 @@ const payload = {
       if (level >= 2) confetti();
     }
 
-    // Scurtături de tastatură: A/B/C sau 1/2/3 pentru răspuns, Enter pentru continuare
+    // Scurtături de tastatură: A/B/C/D sau 1/2/3/4 pentru răspuns, Enter pentru continuare
     cab.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
       if (state === 'round') {
-        const map: Record<string, string> = { '1': 'a', '2': 'b', '3': 'c' };
+        const map: Record<string, string> = { '1': 'a', '2': 'b', '3': 'c', '4': 'd' };
         const key = map[k] ?? k;
         const btn = stage.querySelector<HTMLButtonElement>(`.option[data-key="${key}"]`);
         if (btn) { e.preventDefault(); btn.click(); }
@@ -402,7 +415,7 @@ const payload = {
   @keyframes blink { 50% { opacity: .55; } }
   .stage :global(.patience-secs) { font-family: ui-monospace, Consolas, monospace; color: var(--yellow); font-size: .85rem; }
 
-  .stage :global(.options) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stage :global(.options) { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .stage :global(.option) {
     position: relative; display: flex; flex-direction: column; gap: 8px; text-align: left; cursor: pointer;
     font: inherit; font-size: .84rem; line-height: 1.45; color: #e6ebff; padding: 12px 12px 14px;
@@ -414,7 +427,7 @@ const payload = {
   .stage :global(.key) { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 6px; font-family: var(--font-head); font-weight: 700; font-size: .8rem; color: #1a0b00; background: var(--yellow); box-shadow: 0 3px 0 #b8a400; }
   .stage :global(.option.is-best) { opacity: 1; border-color: #22c55e; background: rgba(34,197,94,.14); }
   .stage :global(.option.is-chosen.is-ok) { opacity: 1; border-color: #f5b400; background: rgba(245,180,0,.14); }
-  .stage :global(.option.is-chosen.is-bad) { opacity: 1; border-color: #e8463a; background: rgba(232,70,58,.16); }
+  .stage :global(.option.is-chosen.is-bad), .stage :global(.option.is-chosen.is-trap) { opacity: 1; border-color: #e8463a; background: rgba(232,70,58,.16); }
 
   .stage :global(.float-points) { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-family: var(--font-head); font-weight: 800; font-size: 1.3rem; color: var(--yellow); text-shadow: 0 0 12px rgba(255,209,102,.8); pointer-events: none; animation: floatUp 1.2s ease-out forwards; white-space: nowrap; }
   @keyframes floatUp { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -48px); } }
@@ -425,8 +438,8 @@ const payload = {
   .stage :global(.verdict) { font-family: var(--font-head); letter-spacing: .04em; }
   .stage :global(.fb-best) { background: rgba(34,197,94,.15); } .stage :global(.fb-best .verdict) { color: #7ee787; }
   .stage :global(.fb-ok) { background: rgba(245,180,0,.15); } .stage :global(.fb-ok .verdict) { color: #ffd166; }
-  .stage :global(.fb-bad), .stage :global(.fb-timeout) { background: rgba(232,70,58,.16); }
-  .stage :global(.fb-bad .verdict), .stage :global(.fb-timeout .verdict) { color: #ff8a7f; }
+  .stage :global(.fb-bad), .stage :global(.fb-trap), .stage :global(.fb-timeout) { background: rgba(232,70,58,.16); }
+  .stage :global(.fb-bad .verdict), .stage :global(.fb-trap .verdict), .stage :global(.fb-timeout .verdict) { color: #ff8a7f; }
   .stage :global(.next) { flex: none; border: 0; cursor: pointer; padding: 10px 16px; border-radius: 8px; font-family: var(--font-head); font-weight: 700; font-size: .85rem; color: #1a0b00; background: linear-gradient(180deg, #ffd166, #f07a3c); box-shadow: 0 4px 0 #a3420f; }
   .stage :global(.next:active) { transform: translateY(3px); box-shadow: 0 1px 0 #a3420f; }
 
