@@ -57,6 +57,11 @@ ErrorDocument 404 /404.html
   # Link vechi /services/#quality-policy se rezolvă din pagina /services/ (fragmentul # nu ajunge la server)
 </IfModule>
 
+# Fișierele de configurare ale formularului (cu chei secrete) nu pot fi deschise din browser
+<FilesMatch "^contact-config.*\.php$">
+  Require all denied
+</FilesMatch>
+
 # Fișierele ascunse (ex. .git, .env) nu sunt accesibile, cu excepția /.well-known/
 <IfModule mod_rewrite.c>
   RewriteRule "(^|/)\.(?!well-known/)" - [F]

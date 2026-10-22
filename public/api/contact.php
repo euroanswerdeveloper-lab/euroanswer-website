@@ -3,14 +3,22 @@
  * Formularul de contact Euroanswer — primește datele din /contact/, le validează,
  * verifică anti-spam (Cloudflare Turnstile), trimite emailul și salvează cererea într-un CSV privat.
  *
- * ▸ CONFIGURARE (modifică doar valorile de mai jos):
+ * ▸ CONFIGURARE: NU scrie chei secrete în acest fișier (e salvat pe GitHub).
+ *   Copiază `contact-config.example.php` ca `contact-config.php` (în același folder) și completează-l acolo.
+ *   `contact-config.php` este exclus din Git (.gitignore). Fără el se folosesc valorile implicite de mai jos.
  */
-const CONTACT_TO   = 'sales@euroanswer.co.uk';                 // unde ajung mesajele (mai multe: separate prin virgulă)
-const CONTACT_FROM = 'website@testamentulporcului.ro';         // expeditor — o adresă de pe domeniul site-ului (creată în cPanel)
-const TURNSTILE_SECRET = '1x0000000000000000000000000000000AA'; // cheia secretă Turnstile; cea de acum e cheia de TEST (trece mereu)
-// Cererile se salvează și într-un CSV, în afara folderului public (nu poate fi deschis din browser).
-// Lasă '' ca să dezactivezi salvarea.
-const LEADS_CSV = __DIR__ . '/../../euroanswer-leads/leads.csv';
+$config = array_merge([
+    'CONTACT_TO'       => 'sales@euroanswer.co.uk',              // unde ajung mesajele (mai multe: separate prin virgulă)
+    'CONTACT_FROM'     => 'website@testamentulporcului.ro',      // expeditor — o adresă de pe domeniul site-ului (creată în cPanel)
+    'TURNSTILE_SECRET' => '1x0000000000000000000000000000000AA', // cheie de TEST publică Cloudflare (trece mereu) — cea reală merge în contact-config.php
+    // Cererile se salvează și într-un CSV, în afara folderului public (nu poate fi deschis din browser). '' = dezactivat.
+    'LEADS_CSV'        => __DIR__ . '/../../euroanswer-leads/leads.csv',
+], is_file(__DIR__ . '/contact-config.php') ? (array) require __DIR__ . '/contact-config.php' : []);
+
+define('CONTACT_TO', $config['CONTACT_TO']);
+define('CONTACT_FROM', $config['CONTACT_FROM']);
+define('TURNSTILE_SECRET', $config['TURNSTILE_SECRET']);
+define('LEADS_CSV', $config['LEADS_CSV']);
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 

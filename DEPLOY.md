@@ -33,9 +33,14 @@ sau 7-Zip: *Add to archive → ZIP → Parameters: `cu=on`*.
 4. Verifică faptul că `.htaccess` există (File Manager → Settings → *Show Hidden Files*).
 5. SSL activ (cPanel → SSL/TLS Status → AutoSSL). PHP 7.4+ (recomandat 8.2).
 
-## 4. Configurare formular — `public_html/api/contact.php`
+## 4. Configurare formular — `public_html/api/contact-config.php`
 
-| Constantă | Ce pui |
+**Nu modifica `contact.php`** și nu scrie chei secrete în fișierele din proiect (sunt salvate pe GitHub).
+În cPanel → File Manager → `public_html/api/`: copiază `contact-config.example.php` ca **`contact-config.php`**
+și completează valorile. Fișierul e exclus din Git și blocat pentru acces din browser (`.htaccess`).
+Fără el, formularul folosește valorile implicite (adresele de mai jos + cheia Turnstile de test).
+
+| Cheie | Ce pui |
 |---|---|
 | `CONTACT_TO` | adresa care primește cererile |
 | `CONTACT_FROM` | o adresă de pe domeniul site-ului, creată în cPanel → Email Accounts |

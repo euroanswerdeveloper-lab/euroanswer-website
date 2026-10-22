@@ -24,3 +24,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Configurări cu chei secrete — rămân doar local și pe server, niciodată pe GitHub
+public/api/contact-config.php
+*.pem
+*.key
+.env.*
+!.env.example
