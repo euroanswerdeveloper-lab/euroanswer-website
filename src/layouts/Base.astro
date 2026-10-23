@@ -31,7 +31,7 @@ const organization = {
   name: 'Euroanswer',
   url: 'https://www.euroanswer.co.uk/',
   logo: 'https://www.euroanswer.co.uk/logo.jpg',
-  description: 'Boutique BPO company providing multilingual customer service outsourcing, technical support and staffing services in 20+ languages from delivery centres in Bucharest, Galati and Skopje.',
+  description: 'Boutique BPO company providing multilingual customer service outsourcing, technical support and staffing services in 20+ languages, with delivery centres in Romania, North Macedonia and Uzbekistan and delivery teams in Ukraine, Poland and Hungary.',
   foundingDate: '2004',
   founder: { '@type': 'Person', name: 'Marian Raianu', jobTitle: 'CEO & Founder', sameAs: 'https://www.linkedin.com/in/marian-raianu-340398/' },
   email: 'office@euroanswer.co.uk',
@@ -43,11 +43,13 @@ const organization = {
     addressLocality: 'Bucharest',
     addressCountry: 'RO',
   },
+  // Centre de livrare (pe țări) + alte țări din care se livrează
   location: [
-    { '@type': 'Place', name: 'Euroanswer Bucharest', address: { '@type': 'PostalAddress', streetAddress: '28 Dr. Iacob Felix St, 1st Floor', postalCode: '011038', addressLocality: 'Bucharest', addressCountry: 'RO' } },
-    { '@type': 'Place', name: 'Euroanswer Galati', address: { '@type': 'PostalAddress', streetAddress: 'B-dul Siderurgiștilor 7, tronson 2, Bloc PS1B', addressLocality: 'Galati', addressCountry: 'RO' } },
-    { '@type': 'Place', name: 'Euroanswer Skopje', address: { '@type': 'PostalAddress', streetAddress: '1-1/40 Stoltenbergova St', addressLocality: 'Skopje', addressCountry: 'MK' } },
+    { '@type': 'Place', name: 'Euroanswer delivery centre — Romania', address: { '@type': 'PostalAddress', addressCountry: 'RO' } },
+    { '@type': 'Place', name: 'Euroanswer delivery centre — North Macedonia', address: { '@type': 'PostalAddress', addressCountry: 'MK' } },
+    { '@type': 'Place', name: 'Euroanswer delivery centre — Uzbekistan', address: { '@type': 'PostalAddress', addressCountry: 'UZ' } },
   ],
+  areaServed: ['Europe', 'North America'],
   knowsLanguage: ['en', 'de', 'fr', 'it', 'es', 'ro', 'el', 'hu', 'fi', 'nl', 'pl', 'cs', 'sk', 'bg', 'mk', 'sq', 'sr', 'ru', 'tr', 'ar'],
   hasCredential: [
     { '@type': 'EducationalOccupationalCredential', name: 'ISO 9001' },
@@ -176,7 +178,7 @@ const services = t.serviceItems;
             <h4>{t.getInTouch}</h4>
             <p><a href="tel:+40317305000">+40 317 305 000</a></p>
             <p><a href="mailto:office@euroanswer.co.uk">office@euroanswer.co.uk</a></p>
-            <p>Bucharest · Galati · Skopje</p>
+            <p>{t.footerCountries}</p>
           </div>
         </div>
         <div class="footer-bottom">

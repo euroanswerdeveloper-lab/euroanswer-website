@@ -1,13 +1,14 @@
 # Euroanswer
 
-> Euroanswer is a boutique BPO (business process outsourcing) company founded in 2004 and headquartered in Bucharest, Romania. It provides multilingual customer service outsourcing, technical support and staffing services in 20+ languages from delivery centres in Bucharest and Galati (Romania) and Skopje (North Macedonia), serving clients in 40 countries. Euroanswer is ISO 9001 and ISO/IEC 27001 certified and GDPR-compliant.
+> Euroanswer is a boutique BPO (business process outsourcing) company founded in 2004 and headquartered in Romania. It provides multilingual customer service outsourcing, technical support and staffing services in 20+ languages from delivery centres in Romania, North Macedonia and Uzbekistan, with additional delivery from Ukraine, Poland and Hungary, serving clients in 40 countries. Euroanswer is ISO 9001 and ISO/IEC 27001 certified and GDPR-compliant.
 
 Key facts:
 
 - Founder & CEO: Marian Raianu
 - Founded: 2004
 - Headquarters: 28 Dr. Iacob Felix St, 1st Floor, 011038, District 1, Bucharest, Romania
-- Delivery centres: Bucharest (95 agents, 6 languages), Galati (19 agents, 3 languages), Skopje (69 agents, 16 languages)
+- Delivery centres: Romania, North Macedonia, Uzbekistan
+- Other delivery countries: Ukraine, Poland, Hungary (other EU countries possible depending on requirements)
 - Languages: English, German, French, Italian, Spanish, Dutch, Romanian, Greek, Hungarian, Finnish, Polish, Czech, Slovak, Bulgarian, Macedonian, Albanian, Serbian, Russian, Turkish, Arabic
 - Industries: technology, banking, financial services, gaming, education, booking & travel, personal advertising, digital printing
 - Certifications: ISO 9001, ISO/IEC 27001 (certification body accredited by IAS)

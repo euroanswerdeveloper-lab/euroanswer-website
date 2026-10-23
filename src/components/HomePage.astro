@@ -153,11 +153,16 @@ const faqSchema = {
       <div class="centres">
         {centres.map((c) => (
           <div class="centre" style={`--accent:${c.color}`}>
-            <h3>{c.city}</h3>
-            <p class="centre-meta"><strong>{c.agents} {t.centres.agents}</strong> · <strong>{c.languages} {t.centres.languages}</strong></p>
-            <p class="centre-langs">{c.list}</p>
+            <span class="centre-region">{c.region}</span>
+            <h3>{c.country}</h3>
+            <p class="centre-langs">{c.text}</p>
           </div>
         ))}
+      </div>
+      <div class="also">
+        <p class="also-title">{t.centres.alsoTitle}</p>
+        <ul>{t.centres.also.map((country) => <li>{country}</li>)}</ul>
+        <p class="also-more">{t.centres.more}</p>
       </div>
     </div>
   </section>
@@ -342,9 +347,15 @@ const faqSchema = {
 
   .centres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .centre { border-top: 4px solid var(--accent); background: #fff; padding: 28px; }
-  .centre h3 { color: var(--accent); font-size: 1.8rem; margin: 0 0 8px; }
-  .centre-meta { color: var(--indigo); font-family: var(--font-head); margin: 0 0 12px; }
+  .centre h3 { color: var(--accent); font-size: 1.7rem; margin: 4px 0 10px; }
+  .centre-region { font-family: var(--font-head); font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
   .centre-langs { color: var(--muted); margin: 0; font-size: .95rem; }
+
+  .also { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 20px; padding: 20px 24px; background: #fff; border-left: 4px solid var(--indigo); }
+  .also-title { margin: 0; font-family: var(--font-head); font-weight: 600; color: var(--navy); }
+  .also ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; }
+  .also li { font-family: var(--font-head); font-weight: 600; font-size: .92rem; color: var(--indigo); background: var(--bg-soft); padding: 6px 14px; }
+  .also-more { flex-basis: 100%; margin: 0; font-size: .92rem; color: var(--muted); }
 
   .compliance { padding: 64px 0; }
   .compliance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }

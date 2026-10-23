@@ -31,3 +31,6 @@ public/api/contact-config.php
 *.key
 .env.*
 !.env.example
+
+# Fișiere media originale (mari) — sursa pentru variantele optimizate din public/; nu se publică
+media-originals/

@@ -3,27 +3,29 @@
 // nu există încă în DE/RU trimit la varianta în engleză.
 import type { Lang } from './ui';
 
+// Centrele de livrare — pe țări (fără orașe), conform cerinței clientului.
 const centresBase = [
-  { city: { en: 'Skopje', de: 'Skopje', ru: 'Скопье' }, color: '#cf2e2e', agents: 69, languages: 16 },
-  { city: { en: 'Bucharest', de: 'Bukarest', ru: 'Бухарест' }, color: '#ff6900', agents: 95, languages: 6 },
-  { city: { en: 'Galati', de: 'Galați', ru: 'Галац' }, color: '#0693e3', agents: 19, languages: 3 },
+  { country: { en: 'Romania', de: 'Rumänien', ru: 'Румыния' }, region: { en: 'EU', de: 'EU', ru: 'ЕС' }, color: '#ff6900' },
+  { country: { en: 'North Macedonia', de: 'Nordmazedonien', ru: 'Северная Македония' }, region: { en: 'Non-EU · Europe', de: 'Nicht-EU · Europa', ru: 'Вне ЕС · Европа' }, color: '#cf2e2e' },
+  { country: { en: 'Uzbekistan', de: 'Usbekistan', ru: 'Узбекистан' }, region: { en: 'Central Asia', de: 'Zentralasien', ru: 'Центральная Азия' }, color: '#0693e3' },
 ];
 
-const centreLanguages = {
+// Textul fiecărui centru (limbile pentru RO / MK; pentru Uzbekistan — descriere, fără date inventate)
+const centreText = {
   en: [
-    'English, Macedonian, Albanian, German, Italian, French, Spanish, Bulgarian, Slovak, Polish, Czech, Serbian, Russian, Dutch, Turkish, Arabic',
-    'English, Romanian, German, Greek, Hungarian, Finnish',
-    'English, Romanian, Italian',
+    'Languages: English, Romanian, German, Greek, Hungarian, Finnish, Italian',
+    'Languages: English, Macedonian, Albanian, German, Italian, French, Spanish, Bulgarian, Slovak, Polish, Czech, Serbian, Russian, Dutch, Turkish, Arabic',
+    'Our newest delivery centre, launched in 2025 with a local partner — expanding our language reach and talent pool in Central Asia.',
   ],
   de: [
-    'Englisch, Mazedonisch, Albanisch, Deutsch, Italienisch, Französisch, Spanisch, Bulgarisch, Slowakisch, Polnisch, Tschechisch, Serbisch, Russisch, Niederländisch, Türkisch, Arabisch',
-    'Englisch, Rumänisch, Deutsch, Griechisch, Ungarisch, Finnisch',
-    'Englisch, Rumänisch, Italienisch',
+    'Sprachen: Englisch, Rumänisch, Deutsch, Griechisch, Ungarisch, Finnisch, Italienisch',
+    'Sprachen: Englisch, Mazedonisch, Albanisch, Deutsch, Italienisch, Französisch, Spanisch, Bulgarisch, Slowakisch, Polnisch, Tschechisch, Serbisch, Russisch, Niederländisch, Türkisch, Arabisch',
+    'Unser neuestes Delivery Center, 2025 mit einem lokalen Partner eröffnet — für mehr Sprachen und Fachkräfte in Zentralasien.',
   ],
   ru: [
-    'английский, македонский, албанский, немецкий, итальянский, французский, испанский, болгарский, словацкий, польский, чешский, сербский, русский, нидерландский, турецкий, арабский',
-    'английский, румынский, немецкий, греческий, венгерский, финский',
-    'английский, румынский, итальянский',
+    'Языки: английский, румынский, немецкий, греческий, венгерский, финский, итальянский',
+    'Языки: английский, македонский, албанский, немецкий, итальянский, французский, испанский, болгарский, словацкий, польский, чешский, сербский, русский, нидерландский, турецкий, арабский',
+    'Наш новейший центр обслуживания, открытый в 2025 году вместе с местным партнёром, — больше языков и специалистов в Центральной Азии.',
   ],
 };
 
@@ -31,7 +33,7 @@ export const homeText = {
   en: {
     meta: {
       title: 'Multilingual BPO Company in Europe | Euroanswer',
-      description: 'Euroanswer is a boutique BPO company delivering multilingual BPO services in 20+ languages from Romania and North Macedonia. ISO 9001 & 27001 certified, since 2004.',
+      description: 'Euroanswer is a boutique BPO company delivering multilingual BPO services in 20+ languages from Romania, North Macedonia and Uzbekistan. ISO 9001 & 27001 certified, since 2004.',
     },
     hero: {
       eyebrow: 'Boutique BPO company · since 2004',
@@ -40,7 +42,7 @@ export const homeText = {
       lead: 'We combine human connection, multilingual expertise and smart technology to deliver exceptional customer experiences for global brands.',
       cta1: 'Discuss your needs', cta2: 'Explore our BPO services', cta3: 'Play our 100s GAME', imgAlt: 'Euroanswer customer experience orbit — omnichannel BPO services',
     },
-    summary: '<strong>Euroanswer is a boutique BPO company</strong> founded in 2004 and headquartered in Bucharest, Romania. From delivery centres in <strong>Bucharest, Galati and Skopje</strong>, we provide BPO services — <a href="/customer-service-outsourcing/">customer service outsourcing</a>, technical support and <a href="/staffing-services/">staffing services</a> — in <strong>20+ languages</strong> for clients in 40 countries. We are <strong>ISO 9001 and ISO/IEC 27001 certified</strong>.',
+    summary: '<strong>Euroanswer is a boutique BPO company</strong> founded in 2004 and headquartered in Romania. With delivery centres in <strong>Romania, North Macedonia and Uzbekistan</strong> — and delivery teams in Ukraine, Poland and Hungary — we provide BPO services — <a href="/customer-service-outsourcing/">customer service outsourcing</a>, technical support and <a href="/staffing-services/">staffing services</a> — in <strong>20+ languages</strong> for clients in 40 countries. We are <strong>ISO 9001 and ISO/IEC 27001 certified</strong>.',
     about: {
       eyebrow: 'About Euroanswer',
       title: 'More Than Outsourcing.<br /><strong>A Better Customer Experience.</strong>',
@@ -56,7 +58,7 @@ export const homeText = {
       { value: '20+', label: 'Years of experience' },
       { value: '20+', label: 'Languages' },
       { value: '40', label: 'Countries supported' },
-      { value: '3', label: 'Delivery hubs', note: 'EU & Non-EU' },
+      { value: '6', label: 'Delivery countries', note: 'EU & Non-EU' },
     ],
     services: {
       eyebrow: 'What we do', title: 'Our BPO Services',
@@ -83,18 +85,19 @@ export const homeText = {
     },
     nearshore: {
       eyebrow: 'Nearshore outsourcing', title: 'Why choose a nearshore BPO company in Eastern Europe?',
-      intro: 'Romania and North Macedonia have become leading nearshore BPO destinations for European and North American brands. Here is what that means for your customers. <a href="/outsource-technical-support-for-western-quality-at-eastern-costs/">Read more on our blog →</a>',
+      intro: 'Romania, North Macedonia and our partner countries in Eastern Europe have become leading nearshore BPO destinations for European and North American brands. Here is what that means for your customers. <a href="/outsource-technical-support-for-western-quality-at-eastern-costs/">Read more on our blog →</a>',
       items: [
-        { title: 'Close to your customers', text: 'Our hubs share or neighbour Central European time zones and are a short flight from Western Europe — easy to visit, easy to align with.' },
+        { title: 'Close to your customers', text: 'Most of our delivery countries share or neighbour Central European time zones and are a short flight from Western Europe — easy to visit, easy to align with.' },
         { title: 'Real language depth', text: 'Native and fluent agents in 20+ languages, including German, French, Italian, Nordic and Balkan languages — not just English.' },
         { title: 'Western quality, Eastern costs', text: 'Highly educated multilingual talent at a lower cost than in-house teams in Western Europe or the UK.' },
         { title: 'EU-grade data protection', text: 'GDPR-compliant operations and ISO/IEC 27001-certified information security for your customer data.' },
       ],
     },
     centres: {
-      eyebrow: 'Our delivery centres', title: 'Three hubs, 20+ languages',
+      eyebrow: 'Our delivery centres', title: 'Delivery centres in three countries, 20+ languages',
       intro: 'We provide customer experience through hubs of operational excellence and diverse cultural proficiency. Our dialogue is corporate to corporate, yet our service attests to individuals with distinct needs.',
-      agents: 'agents', languages: 'languages',
+      alsoTitle: 'We also deliver from', also: ['Ukraine', 'Poland', 'Hungary'],
+      more: 'We can explore delivery from other EU countries, depending on your requirements.',
     },
     compliance: {
       eyebrow: 'Compliance & quality standards', title: 'ISO 9001 & ISO/IEC 27001 certified',
@@ -112,7 +115,7 @@ export const homeText = {
       items: [
         { q: 'What is a BPO company?', a: 'A BPO (business process outsourcing) company runs business processes on behalf of other organisations — most often customer service, technical support, back-office tasks and staffing. Euroanswer is a boutique BPO company specialising in multilingual customer operations.' },
         { q: 'What BPO services does Euroanswer offer?', a: 'Two main service lines: customer service outsourcing (omnichannel customer support, customer experience, technical help desk and back office) and staffing services (recruitment, HR administration, payroll and outstaffing / staff leasing).' },
-        { q: 'Where are your delivery centres?', a: 'Euroanswer is headquartered in Bucharest, Romania, with delivery centres in Bucharest and Galati (Romania) and Skopje (North Macedonia), serving clients in 40 countries.' },
+        { q: 'Where are your delivery centres?', a: 'Our delivery centres are in Romania, North Macedonia and Uzbekistan. We also deliver from Ukraine, Poland and Hungary, and can explore delivery from other EU countries depending on your requirements. We serve clients in 40 countries.' },
         { q: 'Which languages do you support?', a: 'More than 20 languages, including English, German, French, Italian, Spanish, Dutch, Romanian, Greek, Hungarian, Finnish, Polish, Czech, Slovak, Bulgarian, Macedonian, Albanian, Serbian, Russian, Turkish and Arabic.' },
         { q: 'Why choose a nearshore BPO company in Eastern Europe?', a: 'Eastern Europe combines multilingual, highly educated talent with lower costs than Western Europe, close time zones, short travel distances and EU data protection standards such as GDPR.' },
         { q: 'Is my customer data secure?', a: 'Yes. Euroanswer is ISO 9001 and ISO/IEC 27001 certified, operates in line with GDPR, and defines data protection responsibilities clearly in every agreement.' },
@@ -127,7 +130,7 @@ export const homeText = {
   de: {
     meta: {
       title: 'Mehrsprachiges BPO-Unternehmen in Europa | Euroanswer',
-      description: 'Euroanswer ist ein Boutique-BPO-Unternehmen mit mehrsprachigen BPO-Dienstleistungen in über 20 Sprachen aus Rumänien und Nordmazedonien. ISO 9001 & 27001 zertifiziert, seit 2004.',
+      description: 'Euroanswer ist ein Boutique-BPO-Unternehmen mit mehrsprachigen BPO-Dienstleistungen in über 20 Sprachen aus Rumänien, Nordmazedonien und Usbekistan. ISO 9001 & 27001 zertifiziert, seit 2004.',
     },
     hero: {
       eyebrow: 'Boutique-BPO-Unternehmen · seit 2004',
@@ -136,7 +139,7 @@ export const homeText = {
       lead: 'Wir verbinden menschliche Nähe, mehrsprachige Expertise und smarte Technologie zu herausragenden Kundenerlebnissen für globale Marken.',
       cta1: 'Anfrage besprechen', cta2: 'Unsere BPO-Leistungen', cta3: 'Unser 100-Sekunden-SPIEL', imgAlt: 'Euroanswer Customer-Experience-Orbit — Omnichannel-BPO-Dienstleistungen',
     },
-    summary: '<strong>Euroanswer ist ein Boutique-BPO-Unternehmen</strong>, gegründet 2004 mit Hauptsitz in Bukarest, Rumänien. Von unseren Standorten in <strong>Bukarest, Galați und Skopje</strong> aus erbringen wir BPO-Dienstleistungen — <a href="/de/kundensupport-auf-hochstem-niveau-mit-euroanswer-an-ihrer-seite/">Kundenservice-Outsourcing</a>, technischen Support und <a href="/staffing-services/">Personaldienstleistungen</a> — in <strong>über 20 Sprachen</strong> für Kunden in 40 Ländern. Wir sind <strong>nach ISO 9001 und ISO/IEC 27001 zertifiziert</strong>.',
+    summary: '<strong>Euroanswer ist ein Boutique-BPO-Unternehmen</strong>, gegründet 2004 mit Hauptsitz in Rumänien. Mit Delivery Centern in <strong>Rumänien, Nordmazedonien und Usbekistan</strong> — und Teams in der Ukraine, Polen und Ungarn — erbringen wir BPO-Dienstleistungen — <a href="/de/kundensupport-auf-hochstem-niveau-mit-euroanswer-an-ihrer-seite/">Kundenservice-Outsourcing</a>, technischen Support und <a href="/staffing-services/">Personaldienstleistungen</a> — in <strong>über 20 Sprachen</strong> für Kunden in 40 Ländern. Wir sind <strong>nach ISO 9001 und ISO/IEC 27001 zertifiziert</strong>.',
     about: {
       eyebrow: 'Über Euroanswer',
       title: 'Mehr als Outsourcing.<br /><strong>Ein besseres Kundenerlebnis.</strong>',
@@ -152,7 +155,7 @@ export const homeText = {
       { value: '20+', label: 'Jahre Erfahrung' },
       { value: '20+', label: 'Sprachen' },
       { value: '40', label: 'Länder betreut' },
-      { value: '3', label: 'Standorte', note: 'EU & Nicht-EU' },
+      { value: '6', label: 'Lieferländer', note: 'EU & Nicht-EU' },
     ],
     services: {
       eyebrow: 'Was wir tun', title: 'Unsere BPO-Dienstleistungen',
@@ -179,18 +182,19 @@ export const homeText = {
     },
     nearshore: {
       eyebrow: 'Nearshore-Outsourcing', title: 'Warum ein Nearshore-BPO-Unternehmen in Osteuropa?',
-      intro: 'Rumänien und Nordmazedonien zählen zu den führenden Nearshore-BPO-Standorten für europäische und nordamerikanische Marken. Das bedeutet es für Ihre Kunden. <a href="/outsource-technical-support-for-western-quality-at-eastern-costs/">Mehr in unserem Blog (EN) →</a>',
+      intro: 'Rumänien, Nordmazedonien und unsere Partnerländer in Osteuropa zählen zu den führenden Nearshore-BPO-Standorten für europäische und nordamerikanische Marken. Das bedeutet es für Ihre Kunden. <a href="/outsource-technical-support-for-western-quality-at-eastern-costs/">Mehr in unserem Blog (EN) →</a>',
       items: [
-        { title: 'Nah an Ihren Kunden', text: 'Unsere Standorte liegen in mitteleuropäischen oder angrenzenden Zeitzonen und nur einen kurzen Flug von Westeuropa entfernt — leicht zu besuchen, leicht abzustimmen.' },
+        { title: 'Nah an Ihren Kunden', text: 'Die meisten unserer Lieferländer liegen in mitteleuropäischen oder angrenzenden Zeitzonen und nur einen kurzen Flug von Westeuropa entfernt — leicht zu besuchen, leicht abzustimmen.' },
         { title: 'Echte Sprachtiefe', text: 'Muttersprachliche und fließend sprechende Agents in über 20 Sprachen, darunter Deutsch, Französisch, Italienisch, nordische und Balkansprachen — nicht nur Englisch.' },
         { title: 'Westliche Qualität, östliche Kosten', text: 'Hochqualifizierte mehrsprachige Fachkräfte zu geringeren Kosten als interne Teams in Westeuropa oder Großbritannien.' },
         { title: 'Datenschutz nach EU-Standard', text: 'DSGVO-konforme Prozesse und nach ISO/IEC 27001 zertifizierte Informationssicherheit für Ihre Kundendaten.' },
       ],
     },
     centres: {
-      eyebrow: 'Unsere Standorte', title: 'Drei Standorte, über 20 Sprachen',
+      eyebrow: 'Unsere Delivery Center', title: 'Delivery Center in drei Ländern, über 20 Sprachen',
       intro: 'Wir gestalten Kundenerlebnisse aus Standorten mit operativer Exzellenz und vielfältiger kultureller Kompetenz. Unser Dialog ist B2B — unser Service gilt Menschen mit individuellen Bedürfnissen.',
-      agents: 'Agents', languages: 'Sprachen',
+      alsoTitle: 'Wir liefern außerdem aus', also: ['der Ukraine', 'Polen', 'Ungarn'],
+      more: 'Je nach Anforderung prüfen wir auch die Erbringung aus weiteren EU-Ländern.',
     },
     compliance: {
       eyebrow: 'Compliance & Qualitätsstandards', title: 'Zertifiziert nach ISO 9001 & ISO/IEC 27001',
@@ -208,7 +212,7 @@ export const homeText = {
       items: [
         { q: 'Was ist ein BPO-Unternehmen?', a: 'Ein BPO-Unternehmen (Business Process Outsourcing) übernimmt Geschäftsprozesse im Auftrag anderer Organisationen — meist Kundenservice, technischen Support, Backoffice-Aufgaben und Personaldienstleistungen. Euroanswer ist ein Boutique-BPO-Unternehmen, spezialisiert auf mehrsprachigen Kundenservice.' },
         { q: 'Welche BPO-Dienstleistungen bietet Euroanswer an?', a: 'Zwei Hauptbereiche: Kundenservice-Outsourcing (Omnichannel-Kundensupport, Customer Experience, technischer Helpdesk und Backoffice) und Personaldienstleistungen (Recruiting, HR-Administration, Lohnabrechnung und Outstaffing / Arbeitnehmerüberlassung).' },
-        { q: 'Wo befinden sich Ihre Standorte?', a: 'Euroanswer hat seinen Hauptsitz in Bukarest, Rumänien, mit Standorten in Bukarest und Galați (Rumänien) sowie Skopje (Nordmazedonien) und betreut Kunden in 40 Ländern.' },
+        { q: 'Wo befinden sich Ihre Delivery Center?', a: 'Unsere Delivery Center befinden sich in Rumänien, Nordmazedonien und Usbekistan. Außerdem liefern wir aus der Ukraine, Polen und Ungarn und prüfen je nach Anforderung auch weitere EU-Länder. Wir betreuen Kunden in 40 Ländern.' },
         { q: 'Welche Sprachen unterstützen Sie?', a: 'Über 20 Sprachen, darunter Englisch, Deutsch, Französisch, Italienisch, Spanisch, Niederländisch, Rumänisch, Griechisch, Ungarisch, Finnisch, Polnisch, Tschechisch, Slowakisch, Bulgarisch, Mazedonisch, Albanisch, Serbisch, Russisch, Türkisch und Arabisch.' },
         { q: 'Warum ein Nearshore-BPO-Unternehmen in Osteuropa?', a: 'Osteuropa verbindet mehrsprachige, hochqualifizierte Fachkräfte mit geringeren Kosten als in Westeuropa, nahen Zeitzonen, kurzen Reisewegen und EU-Datenschutzstandards wie der DSGVO.' },
         { q: 'Sind meine Kundendaten sicher?', a: 'Ja. Euroanswer ist nach ISO 9001 und ISO/IEC 27001 zertifiziert, arbeitet DSGVO-konform und regelt die Verantwortlichkeiten für den Datenschutz in jedem Vertrag klar.' },
@@ -223,7 +227,7 @@ export const homeText = {
   ru: {
     meta: {
       title: 'Многоязычная BPO-компания в Европе | Euroanswer',
-      description: 'Euroanswer — бутиковая BPO-компания: многоязычные BPO-услуги на 20+ языках из Румынии и Северной Македонии. Сертификаты ISO 9001 и 27001, с 2004 года.',
+      description: 'Euroanswer — бутиковая BPO-компания: многоязычные BPO-услуги на 20+ языках из Румынии, Северной Македонии и Узбекистана. Сертификаты ISO 9001 и 27001, с 2004 года.',
     },
     hero: {
       eyebrow: 'Бутиковая BPO-компания · с 2004 года',
@@ -232,7 +236,7 @@ export const homeText = {
       lead: 'Мы объединяем человеческое участие, многоязычную экспертизу и умные технологии, чтобы создавать исключительный клиентский опыт для глобальных брендов.',
       cta1: 'Обсудить задачу', cta2: 'Наши BPO-услуги', cta3: 'Сыграть в ИГРУ (100 сек)', imgAlt: 'Euroanswer — омниканальные BPO-услуги и клиентский опыт',
     },
-    summary: '<strong>Euroanswer — бутиковая BPO-компания</strong>, основанная в 2004 году, с головным офисом в Бухаресте (Румыния). Из центров обслуживания в <strong>Бухаресте, Галаце и Скопье</strong> мы предоставляем BPO-услуги — <a href="/ru/обслуживание-клиентов/">аутсорсинг клиентской поддержки</a>, техническую поддержку и <a href="/staffing-services/">кадровые услуги</a> — на <strong>20+ языках</strong> для клиентов из 40 стран. Компания <strong>сертифицирована по ISO 9001 и ISO/IEC 27001</strong>.',
+    summary: '<strong>Euroanswer — бутиковая BPO-компания</strong>, основанная в 2004 году, с головным офисом в Румынии. Из центров обслуживания в <strong>Румынии, Северной Македонии и Узбекистане</strong>, а также с командами в Украине, Польше и Венгрии, мы предоставляем BPO-услуги — <a href="/ru/обслуживание-клиентов/">аутсорсинг клиентской поддержки</a>, техническую поддержку и <a href="/staffing-services/">кадровые услуги</a> — на <strong>20+ языках</strong> для клиентов из 40 стран. Компания <strong>сертифицирована по ISO 9001 и ISO/IEC 27001</strong>.',
     about: {
       eyebrow: 'О компании Euroanswer',
       title: 'Больше, чем аутсорсинг.<br /><strong>Лучший клиентский опыт.</strong>',
@@ -248,7 +252,7 @@ export const homeText = {
       { value: '20+', label: 'Лет опыта' },
       { value: '20+', label: 'Языков' },
       { value: '40', label: 'Стран' },
-      { value: '3', label: 'Центра обслуживания', note: 'ЕС и не-ЕС' },
+      { value: '6', label: 'Стран присутствия', note: 'ЕС и не-ЕС' },
     ],
     services: {
       eyebrow: 'Что мы делаем', title: 'Наши BPO-услуги',
@@ -275,18 +279,19 @@ export const homeText = {
     },
     nearshore: {
       eyebrow: 'Нишоринг', title: 'Почему стоит выбрать BPO-компанию в Восточной Европе?',
-      intro: 'Румыния и Северная Македония стали ведущими нишорными BPO-направлениями для европейских и североамериканских брендов. Вот что это значит для ваших клиентов. <a href="/outsource-technical-support-for-western-quality-at-eastern-costs/">Подробнее в нашем блоге (EN) →</a>',
+      intro: 'Румыния, Северная Македония и наши страны-партнёры в Восточной Европе стали ведущими нишорными BPO-направлениями для европейских и североамериканских брендов. Вот что это значит для ваших клиентов. <a href="/outsource-technical-support-for-western-quality-at-eastern-costs/">Подробнее в нашем блоге (EN) →</a>',
       items: [
-        { title: 'Рядом с вашими клиентами', text: 'Наши центры находятся в центральноевропейском или соседнем часовом поясе, в коротком перелёте от Западной Европы — легко приехать, легко синхронизироваться.' },
+        { title: 'Рядом с вашими клиентами', text: 'Большинство наших стран присутствия находятся в центральноевропейском или соседнем часовом поясе, в коротком перелёте от Западной Европы — легко приехать, легко синхронизироваться.' },
         { title: 'Настоящая языковая глубина', text: 'Носители и свободно говорящие специалисты на 20+ языках, включая немецкий, французский, итальянский, скандинавские и балканские языки — не только английский.' },
         { title: 'Западное качество, восточные затраты', text: 'Высокообразованные многоязычные специалисты дешевле собственных команд в Западной Европе или Великобритании.' },
         { title: 'Защита данных по стандартам ЕС', text: 'Процессы в соответствии с GDPR и информационная безопасность, сертифицированная по ISO/IEC 27001.' },
       ],
     },
     centres: {
-      eyebrow: 'Наши центры обслуживания', title: 'Три центра, 20+ языков',
+      eyebrow: 'Наши центры обслуживания', title: 'Центры обслуживания в трёх странах, 20+ языков',
       intro: 'Мы создаём клиентский опыт в центрах операционного совершенства с широкой культурной компетенцией. Наш диалог — B2B, но наш сервис обращён к людям с их индивидуальными потребностями.',
-      agents: 'операторов', languages: 'языков',
+      alsoTitle: 'Мы также работаем из', also: ['Украины', 'Польши', 'Венгрии'],
+      more: 'В зависимости от ваших требований мы можем рассмотреть и другие страны ЕС.',
     },
     compliance: {
       eyebrow: 'Стандарты качества и соответствия', title: 'Сертификаты ISO 9001 и ISO/IEC 27001',
@@ -304,7 +309,7 @@ export const homeText = {
       items: [
         { q: 'Что такое BPO-компания?', a: 'BPO-компания (business process outsourcing) выполняет бизнес-процессы по поручению других организаций — чаще всего клиентскую и техническую поддержку, задачи бэк-офиса и кадровые услуги. Euroanswer — бутиковая BPO-компания, специализирующаяся на многоязычном клиентском сервисе.' },
         { q: 'Какие BPO-услуги предлагает Euroanswer?', a: 'Два основных направления: аутсорсинг клиентской поддержки (омниканальная поддержка, клиентский опыт, техническая поддержка и бэк-офис) и кадровые услуги (подбор персонала, HR-администрирование, расчёт зарплаты и аутстаффинг / лизинг персонала).' },
-        { q: 'Где находятся ваши центры обслуживания?', a: 'Головной офис Euroanswer находится в Бухаресте (Румыния); центры обслуживания — в Бухаресте и Галаце (Румыния) и в Скопье (Северная Македония). Мы обслуживаем клиентов из 40 стран.' },
+        { q: 'Где находятся ваши центры обслуживания?', a: 'Наши центры обслуживания находятся в Румынии, Северной Македонии и Узбекистане. Мы также работаем из Украины, Польши и Венгрии и можем рассмотреть другие страны ЕС в зависимости от ваших требований. Мы обслуживаем клиентов из 40 стран.' },
         { q: 'Какие языки вы поддерживаете?', a: 'Более 20 языков, включая английский, немецкий, французский, итальянский, испанский, нидерландский, румынский, греческий, венгерский, финский, польский, чешский, словацкий, болгарский, македонский, албанский, сербский, русский, турецкий и арабский.' },
         { q: 'Почему стоит выбрать BPO-компанию в Восточной Европе?', a: 'Восточная Европа сочетает многоязычных высококвалифицированных специалистов с более низкими затратами, чем в Западной Европе, близкие часовые пояса, короткие перелёты и европейские стандарты защиты данных, такие как GDPR.' },
         { q: 'Защищены ли данные моих клиентов?', a: 'Да. Euroanswer сертифицирована по ISO 9001 и ISO/IEC 27001, работает в соответствии с GDPR и чётко определяет обязанности по защите данных в каждом договоре.' },
@@ -318,4 +323,4 @@ export const homeText = {
 } as const;
 
 export const centres = (lang: Lang) =>
-  centresBase.map((c, i) => ({ city: c.city[lang], color: c.color, agents: c.agents, languages: c.languages, list: centreLanguages[lang][i] }));
+  centresBase.map((c, i) => ({ country: c.country[lang], region: c.region[lang], color: c.color, text: centreText[lang][i] }));
