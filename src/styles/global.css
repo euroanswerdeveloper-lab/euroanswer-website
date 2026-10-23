@@ -44,7 +44,7 @@ img { max-width: 100%; height: auto; }
 .section-soft { background: var(--bg-soft); }
 
 /* Butoane — pătrate (lățime = înălțime) pe tot site-ul. Mărimea se schimbă din --btn-size.
-   Excepție: .btn-game (butonul spre joc), care rămâne lat și rotunjit. */
+   Butonul spre joc (.btn-game) e tot pătrat, dar cu colțuri rotunjite (vezi HomePage.astro). */
 :root { --btn-size: 114px; }
 @media (max-width: 560px) { :root { --btn-size: 101px; } }
 .btn {
@@ -53,10 +53,6 @@ img { max-width: 100%; height: auto; }
   text-align: center; white-space: normal; line-height: 1.25; overflow-wrap: anywhere;
   font-family: var(--font-head); font-weight: 600; font-size: 0.92rem; text-decoration: none;
   border: 1px solid transparent; cursor: pointer; transition: transform .15s, opacity .15s;
-}
-.btn.btn-game {
-  flex-direction: row; gap: 8px; width: auto; height: auto; padding: 14px 26px;
-  font-size: 0.95rem; white-space: nowrap; overflow-wrap: normal; line-height: 1.4;
 }
 .btn:hover { transform: translateY(-1px); opacity: .92; }
 .btn-primary { background: var(--gradient-cta); color: #fff; }
