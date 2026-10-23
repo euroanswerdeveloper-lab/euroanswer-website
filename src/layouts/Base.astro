@@ -192,6 +192,10 @@ const services = t.serviceItems;
       </div>
     </footer>
 
+    <button type="button" class="to-top" aria-label={t.toTop} title={t.toTop} hidden>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
+
     <script>
       const header = document.querySelector('.site-header');
       const toggle = document.querySelector('.menu-toggle');
@@ -212,6 +216,22 @@ const services = t.serviceItems;
           });
           const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf); };
           requestAnimationFrame(raf);
+          (window as any).__lenis = lenis; // folosit de butonul „Scroll to Top”
+        });
+      }
+
+      // Butonul „Scroll to Top” — apare după ce pagina a fost derulată, urcă lin până sus
+      const toTop = document.querySelector<HTMLButtonElement>('.to-top');
+      if (toTop) {
+        toTop.hidden = false;
+        const update = () => toTop.classList.toggle('show', window.scrollY > 600);
+        window.addEventListener('scroll', update, { passive: true });
+        update();
+        toTop.addEventListener('click', () => {
+          const lenis = (window as any).__lenis;
+          if (lenis) lenis.scrollTo(0);
+          else window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+          document.querySelector<HTMLElement>('.logo')?.focus({ preventScroll: true });
         });
       }
 
