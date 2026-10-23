@@ -45,7 +45,7 @@ const faqSchema = {
         <p class="hero-lead">{t.hero.lead}</p>
         <div class="hero-actions">
           <a href={t.links.contact} class="btn btn-primary">{t.hero.cta1}</a>
-          <a href={t.links.services} class="btn btn-outline">{t.hero.cta2}</a>
+          <a href="#cx-game" class="btn btn-game"><img src="/game/icons/joystick.svg" alt="" width="22" height="22" /> {t.hero.cta3}</a>
         </div>
       </div>
       <Image src={cxOrbit} alt={t.hero.imgAlt} class="hero-img" loading="eager" />
@@ -56,7 +56,7 @@ const faqSchema = {
   <section class="summary">
     <div class="container summary-grid">
       <p set:html={t.summary} />
-      <a href="#cx-game" class="btn btn-game"><img src="/game/icons/joystick.svg" alt="" width="22" height="22" /> {t.hero.cta3}</a>
+      <a href={t.links.services} class="btn btn-outline">{t.hero.cta2}</a>
     </div>
   </section>
 
@@ -277,7 +277,8 @@ const faqSchema = {
   .summary { background: var(--navy-2); color: #dbe2f5; padding: 28px 0; }
   .summary-grid { display: flex; align-items: center; justify-content: space-between; gap: 32px; }
   .summary p { margin: 0; max-width: 900px; font-size: 1.05rem; }
-  .summary .btn-game { flex: none; white-space: nowrap; color: #000; }
+  .summary .btn-outline { color: #fff; } /* linkurile din bandă sunt galbene; butonul rămâne alb */
+  .hero-actions .btn-game { align-self: center; }
   @media (max-width: 900px) {
     .summary-grid { flex-direction: column; align-items: flex-start; gap: 18px; }
   }
