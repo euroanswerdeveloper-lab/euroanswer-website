@@ -229,7 +229,7 @@ We apply strict security protocols, hold ISO certifications and comply with GDPR
 <details>
 <summary>Can you support several languages and time zones at once?</summary>
 
-Yes. Our hubs in Bucharest, Galati and Skopje cover 20+ languages and can run 24/7 operations for multiple markets in parallel.
+Yes. Our delivery centres in Romania, North Macedonia and Uzbekistan — together with our teams in Ukraine, Poland and Hungary — cover 20+ languages and can run 24/7 operations for multiple markets in parallel.
 
 </details>
 

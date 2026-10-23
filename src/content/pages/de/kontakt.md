@@ -1,59 +1,54 @@
 ---
 title: "Kontakt"
-seoTitle: "Contact Our BPO Specialists"
-description: "When you need help with your business, you can count on our expert customer support team. We are available 24/7 to answer your questions and resolve your issues. Contact us today and see how we can help you."
+eyebrow: "Kontakt"
+intro: "Wir sind bereit, über das zu sprechen, was Ihnen wichtig ist. Erzählen Sie uns von Ihren Kunden, Kanälen und Sprachen — ein BPO-Spezialist meldet sich mit einem individuellen Angebot."
+cta:
+  label: "Zum Kontaktformular"
+  href: "/contact/"
+seoTitle: "Kontakt | Euroanswer — BPO-Spezialisten"
+description: "Kontaktieren Sie Euroanswer für Kundenservice-Outsourcing oder Personaldienstleistungen. Delivery Center in Rumänien, Nordmazedonien und Usbekistan. Tel. +40 317 305 000."
 lang: de
 path: "/de/kontakt/"
 wpId: 6300
 ---
-![header\_banner\_contact](/wp-content/uploads/2023/05/header_contact-scaled.webp)
+## Sprechen Sie mit einem Experten
 
-![](/wp-content/uploads/2023/08/euroanswer_hsm_contact_mobile.webp)
+- **Telefon:** [+40 317 305 000](tel:+40317305000)
+- **E-Mail:** [office@euroanswer.co.uk](mailto:office@euroanswer.co.uk) · [sales@euroanswer.co.uk](mailto:sales@euroanswer.co.uk)
+- **Formular:** [Kontaktformular (EN)](/contact/)
 
-# Wir sind bereit, ausführlicher über die Dinge zu sprechen, die Ihnen wichtig sind.
+_Bitte beachten Sie: Wir beantworten nur Anfragen von geschäftlichen E-Mail-Adressen. Anfragen von privaten Adressen (z. B. Gmail, Yahoo, Outlook) erhalten möglicherweise keine Antwort. Für Bewerbungen besuchen Sie bitte unsere Seite [Join the team (EN)](/join-the-team/)._
 
-## KONTAKTIEREN SIE UNS
+## Wo wir sind
 
-**_Wir sind bereit, mehr über das zu sprechen, was Ihnen wichtig ist._**
+<div class="grid-2">
+<div>
 
-_  
-**KONTAKTIEREN SIE UNS**_
+### Hauptsitz — Rumänien
+28 Dr. Iacob Felix St, 1st Floor, 011038, District 1, Bukarest, Rumänien<br>
+[+40 317 305 000](tel:+40317305000) · [office@euroanswer.co.uk](mailto:office@euroanswer.co.uk)
 
-_Bitte beachten Sie, dass wir nur Anfragen beantworten, die von gültigen Geschäftsemail-Adressen eingereicht werden. Anfragen von persönlichen E-Mail-Adressen (wie Gmail, Yahoo, Outlook usw.) erhalten möglicherweise keine Antwort.  
-Um sich für eine Stelle zu bewerben, besuchen Sie bitte unsere „[Join the Team](https://www.euroanswer.co.uk/join-the-team/)“-Seite . Vielen Dank für Ihr Verständnis!_
+</div>
+<div>
 
-![contact\_form\_right\_image](/wp-content/uploads/2023/05/contact_1-972x1030.webp)
+### Delivery Center
+**Rumänien** (EU) · **Nordmazedonien** (Nicht-EU, Europa) · **Usbekistan** (Zentralasien)
 
-![](/wp-content/uploads/2023/06/thank-you-664x1030.webp)
+</div>
+<div>
 
-Deliver globally, talk locally.
+### Wir liefern außerdem aus
+der **Ukraine**, **Polen** und **Ungarn** — und prüfen je nach Anforderung auch weitere EU-Länder.
 
-![background\_contact](/wp-content/uploads/2023/05/background_contact-1030x254.webp)
+</div>
+</div>
 
-EUROANSWER BUCHAREST
+<div class="cta-box">
 
-Bucharest, Romania: 28 Dr. Iacob Felix St, 1st Floor, 011038, District 1  
-  
-[](tel:0800070277)[+40.317.305.000](tel:0317305000)  
-  
-[office@euroanswer.co.uk](mailto:office@euroanswer.co.uk)  
-[sales@euroanswer.co.uk](mailto:sales@euroanswer.co.uk)  
+## Deliver globally, talk locally
 
-EUROANSWER GALATI
+Erzählen Sie uns von Ihrem Projekt — wir erstellen Ihnen ein individuelles Angebot.
 
-Galati, Romania: 200 Morilor St, 800305  
-  
-[+40.317.305.000](tel:0317305000)  
-  
-[office@euroanswer.co.uk](mailto:office@euroanswer.co.uk)
+<p class="apply"><a class="btn btn-light" href="/contact/" style="color:var(--navy)">Zum Kontaktformular</a></p>
 
-EUROANSWER SKOPJE
-
-Skopje, Romania: 1-1/40 Stoltenbergova St, Skopje, North Macedonia  
-  
-[+38.972.205.799](tel:+38972205799)  
-  
-[office@euroanswer.co.uk](mailto:office@euroanswer.co.uk)
-
-_[Customer experience excellence](https://euroanswer.co.uk/customer-experience/) is our business.  
-Untangle value and make an impact with us today!_
+</div>

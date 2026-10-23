@@ -52,7 +52,7 @@ According to [studies](https://www.mordorintelligence.com/industry-reports/europ
 In German for Germany
 
 From 3 supporting locations:  
-Macedonia – Skopje, Romania – Bucharest and Galati
+North Macedonia and Romania
 
 ## **Frequently Asked Questions**
 

@@ -25,7 +25,7 @@ facts:
   - label: "Scope"
     value: "Player support, game moderation, technical issues"
   - label: "Delivery"
-    value: "Skopje, Bucharest, Galati"
+    value: "North Macedonia and Romania"
 wpId: 1510
 ---
 Our client needed an expert partner who understands industry-specific needs, supports players in a fast-moving market and builds trust with both employees and customers. Our dedicated agents deliver excellence in customer support — in a relentless pursuit of expert gameplay and self-improvement.

@@ -30,7 +30,7 @@ facts:
   - label: "Team"
     value: "5 specialists"
   - label: "Delivery"
-    value: "Skopje, Bucharest, Galati"
+    value: "North Macedonia and Romania"
 testimonial:
   quote: "Right from the outset, they demonstrated an impressive understanding of our unique business needs, tailoring their solutions to align with our objectives. What sets them apart is their unwavering dedication to excellence, evident in the consistently high-quality customer service they provide. The Euroanswer team consistently goes the extra mile."
   role: "Head of Customer Excellence"

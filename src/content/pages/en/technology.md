@@ -32,7 +32,7 @@ facts:
   - label: "Languages"
     value: "10: German, Czech, Croatian, Bulgarian, Slovenian, Polish, Greek, Finnish, Romanian, Hungarian"
   - label: "Delivery"
-    value: "Skopje, Bucharest, Galati"
+    value: "North Macedonia and Romania"
 wpId: 1135
 ---
 Our client needed a reliable partner, eager to understand the needs of both their business and their customers. Our approach was built on three building blocks — **people, technology and processes** — working towards both scalability and flexibility.

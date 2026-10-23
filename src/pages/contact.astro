@@ -6,16 +6,19 @@ import { TURNSTILE_SITE_KEY, CAREERS_URL, LIMITS, HEAR_ABOUT, FREE_EMAIL_DOMAINS
 
 const hero = await getImage({ src: heroBg, format: 'webp', width: 2000 });
 
-const offices = [
-  { city: 'Euroanswer Bucharest', tag: 'Headquarters', address: '28 Dr. Iacob Felix St, 1st Floor, 011038, District 1, Bucharest, Romania', phone: '+40 317 305 000', tel: '+40317305000' },
-  { city: 'Euroanswer Galati', tag: 'Delivery centre', address: 'B-dul Siderurgiștilor 7, tronson 2, Bloc PS1B, ground floor, Galati, Romania', phone: '+40 317 305 000', tel: '+40317305000' },
-  { city: 'Euroanswer Skopje', tag: 'Delivery centre', address: '1-1/40 Stoltenbergova St, Skopje, North Macedonia', phone: '+389 72 205 799', tel: '+38972205799' },
+// Sediul (adresă poștală obligatorie legal) + centrele de livrare pe țări (fără orașe, cerința clientului)
+const headquarters = { address: '28 Dr. Iacob Felix St, 1st Floor, 011038, District 1, Bucharest, Romania', phone: '+40 317 305 000', tel: '+40317305000' };
+const centres = [
+  { country: 'Romania', region: 'EU' },
+  { country: 'North Macedonia', region: 'Non-EU · Europe' },
+  { country: 'Uzbekistan', region: 'Central Asia' },
 ];
+const alsoFrom = ['Ukraine', 'Poland', 'Hungary'];
 ---
 
 <Base
   title="Contact Euroanswer | Talk to Our BPO Specialists"
-  description="Contact Euroanswer to discuss customer service outsourcing or staffing services. Offices in Bucharest, Galati and Skopje. Call +40 317 305 000 or send us a message."
+  description="Contact Euroanswer to discuss customer service outsourcing or staffing services. Delivery centres in Romania, North Macedonia and Uzbekistan. Call +40 317 305 000 or send us a message."
 >
   <script slot="head" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
@@ -131,17 +134,25 @@ const offices = [
   <section class="section section-soft">
     <div class="container">
       <p class="eyebrow">Deliver globally, talk locally</p>
-      <h2 class="section-title">Our offices</h2>
+      <h2 class="section-title">Where we are</h2>
       <div class="offices">
-        {offices.map((o) => (
+        <div class="office hq">
+          <span class="tag">Headquarters</span>
+          <h3>Euroanswer — Romania</h3>
+          <p>{headquarters.address}</p>
+          <p><a href={`tel:${headquarters.tel}`}>{headquarters.phone}</a><br /><a href="mailto:office@euroanswer.co.uk">office@euroanswer.co.uk</a></p>
+        </div>
+        {centres.map((c) => (
           <div class="office">
-            <span class="tag">{o.tag}</span>
-            <h3>{o.city}</h3>
-            <p>{o.address}</p>
-            <p><a href={`tel:${o.tel}`}>{o.phone}</a><br /><a href="mailto:office@euroanswer.co.uk">office@euroanswer.co.uk</a></p>
+            <span class="tag">Delivery centre · {c.region}</span>
+            <h3>{c.country}</h3>
+            <p><a href="mailto:office@euroanswer.co.uk">office@euroanswer.co.uk</a></p>
           </div>
         ))}
       </div>
+      <p class="also">
+        <strong>We also deliver from</strong> {alsoFrom.join(' · ')} — and can explore delivery from other EU countries, depending on your requirements.
+      </p>
     </div>
   </section>
 </Base>
@@ -274,7 +285,11 @@ const offices = [
   .form-status.fail { color: #d63031; }
 
   .section-title { font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 0 0 32px; }
-  .offices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .offices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .office.hq { border-top-color: var(--orange); }
+  .also { margin: 20px 0 0; padding: 16px 20px; background: #fff; border-left: 4px solid var(--indigo); color: var(--muted); }
+  .also strong { color: var(--navy); font-family: var(--font-head); }
+  @media (max-width: 1100px) and (min-width: 901px) { .offices { grid-template-columns: repeat(2, 1fr); } }
   .office { background: #fff; padding: 28px; border-top: 3px solid var(--indigo); }
   .office h3 { margin: 6px 0 10px; font-size: 1.2rem; }
   .office p { margin: 0 0 10px; color: var(--muted); font-size: .95rem; }

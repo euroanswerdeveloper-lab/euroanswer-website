@@ -34,7 +34,7 @@ facts:
   - label: "Team"
     value: "3 specialists"
   - label: "Delivery"
-    value: "Skopje, Bucharest, Galati"
+    value: "North Macedonia and Romania"
 wpId: 1530
 ---
 Our client trusted us to deliver **multilingual excellence** through an understanding of local markets, scalability and continuous support. Our team proved hardwired for global performance — flexible, agile and focused on solving problems.

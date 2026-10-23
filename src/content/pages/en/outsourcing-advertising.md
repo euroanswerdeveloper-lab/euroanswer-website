@@ -3,7 +3,7 @@ title: "Customer Support for Personal Advertising Platforms"
 layout: industry
 industry: "Personal Advertising"
 icon: "megaphone"
-intro: "24/7 English-language customer support for a personal advertising platform in North America — 35,000 tickets a month handled by a dedicated team in Skopje."
+intro: "24/7 English-language customer support for a personal advertising platform in North America — 35,000 tickets a month handled by a dedicated team in North Macedonia."
 seoTitle: "Personal Advertising Customer Support Outsourcing | Euroanswer"
 description: "24/7 customer support for personal advertising and classifieds platforms: 35,000 tickets per month for the USA & Canada, 2-minute average handling time per ticket."
 lang: en
@@ -25,9 +25,9 @@ facts:
   - label: "Language"
     value: "English"
   - label: "Delivery"
-    value: "Skopje (with Bucharest & Galati backup)"
+    value: "North Macedonia (with backup from Romania)"
 testimonial:
-  quote: "I have worked for over 35 years in website applications development and support, with many third parties. I can say without hesitation that the Euroanswer team are the most professional and intelligent external customer support call center group I have ever had the privilege of working with. The team in Skopje are doing an excellent job of providing 24/7 English language support to North American customers. Highly recommended."
+  quote: "I have worked for over 35 years in website applications development and support, with many third parties. I can say without hesitation that the Euroanswer team are the most professional and intelligent external customer support call center group I have ever had the privilege of working with. The team are doing an excellent job of providing 24/7 English language support to North American customers. Highly recommended."
   role: "Client"
   company: "Personal advertising industry"
 wpId: 1528

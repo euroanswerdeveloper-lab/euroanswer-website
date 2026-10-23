@@ -9,19 +9,19 @@ export const team = [
   { name: 'Emilija Jakimovska', role: 'Office Director — HR Business Partner', photo: '/wp-content/uploads/2026/05/Emilija-1-1.jpg' },
 ];
 
-// Repere din istoria companiei (din pagina Portfolio)
+// Repere din istoria companiei (din fosta pagină Portfolio). Pe țări, nu pe orașe (cerința clientului).
 export const milestones = [
-  { year: '2004', text: 'Opened Bucharest & London locations' },
-  { year: '2006', text: 'Opened Skopje location and started serving the technology industry' },
+  { year: '2004', text: 'Opened our first locations in Romania and the United Kingdom' },
+  { year: '2006', text: 'Opened our delivery centre in North Macedonia and started serving the technology industry' },
   { year: '2010', text: 'Partnership with a global cyber-security leader' },
-  { year: '2012', text: 'Opened Galati location' },
+  { year: '2012', text: 'Opened a second delivery centre in Romania' },
   { year: '2013', text: 'Started providing all European languages' },
   { year: '2015', text: 'Certified ISO 9001' },
-  { year: '2016', text: 'Best medium support center · opened Sibiu location' },
+  { year: '2016', text: 'Best medium support center · further expansion in Romania' },
   { year: '2017', text: 'Best large support center' },
-  { year: '2018', text: 'Opened Ukraine locations' },
+  { year: '2018', text: 'Started delivering from Ukraine' },
   { year: '2022', text: 'Partnership with an international teaching institution · hybrid work model' },
   { year: '2023', text: 'Certified ISO 27001' },
   { year: '2024', text: 'Euroanswer’s 20th anniversary' },
-  { year: '2025', text: 'BPO hub expansion in Tashkent, Uzbekistan' },
+  { year: '2025', text: 'Opened our delivery centre in Uzbekistan' },
 ];

@@ -32,7 +32,7 @@ facts:
   - label: "Target"
     value: "IT Workplace Experience NPS: 7"
   - label: "Delivery"
-    value: "Romania (Bucharest, Galati) and Skopje"
+    value: "Romania and North Macedonia"
 wpId: 1453
 ---
 Our client wanted a long-term strategic partner they could trust to adapt to their needs — offering intelligent, efficient solutions with a problem-solving orientation, clarity and professionalism. Our service desk support model proved able to harness change and fuel the business strategy, driving sustainable value.

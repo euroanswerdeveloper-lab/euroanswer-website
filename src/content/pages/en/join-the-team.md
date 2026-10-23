@@ -6,7 +6,7 @@ cta:
   label: "Apply now"
   href: "https://euroanswer.mingle.ro/en/apply"
 seoTitle: "Careers — Join the Euroanswer Team"
-description: "Join Euroanswer, a multicultural BPO company with teams in Bucharest, Galati and Skopje. Remote-friendly roles, performance bonuses, coaching and equal parental leave."
+description: "Join Euroanswer, a multicultural BPO company with teams in Romania, North Macedonia, Uzbekistan, Ukraine, Poland and Hungary. Remote-friendly roles, performance bonuses, coaching and equal parental leave."
 lang: en
 path: "/join-the-team/"
 wpId: 171
@@ -86,15 +86,15 @@ We are warm, open and curious. We cultivate inclusion, welcome diversity, and wa
 <div class="grid-2">
 <div>
 
-### Romania — Bucharest & Galati
-Our headquarters, opened in Bucharest in 2004, with a second centre in Galati since 2012. Technology, IT, banking, gaming and finance projects in a friendly, relaxed atmosphere that encourages open dialogue.
+### Romania
+Our headquarters and first delivery centre, opened in 2004, with a second centre since 2012. Technology, IT, banking, gaming and finance projects in a friendly, relaxed atmosphere that encourages open dialogue.
 
 <p class="apply"><a class="btn btn-primary" href="https://euroanswer.mingle.ro/en/apply">Apply now →</a></p>
 
 </div>
 <div>
 
-### North Macedonia — Skopje
+### North Macedonia
 Opened in 2004 and serving 29 EMEA countries in 21 languages, including the German-speaking region. Clear objectives, transparency and flexibility have built long-term client partnerships here.
 
 <p class="apply"><a class="btn btn-primary" href="https://euroanswer.mingle.ro/en/apply">Apply now →</a></p>

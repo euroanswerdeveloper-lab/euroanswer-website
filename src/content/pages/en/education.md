@@ -30,7 +30,7 @@ facts:
   - label: "Team"
     value: "13 dedicated agents"
   - label: "Delivery"
-    value: "Skopje, Bucharest, Galati"
+    value: "North Macedonia and Romania"
 testimonial:
   quote: "We have started our partnership with Euroanswer seven months ago and we are delighted with the work they deliver for us. They manage a contact centre replying to our customers by phone and email for eight different countries in three different languages. Their efficiency, flexibility and professionalism are highly appreciated. They manage to deliver an excellent service to every single customer while dealing with an impressive number of enquiries and hitting our KPIs. Their constant feedback to improve our processes is also particularly valued."
   author: "Patrick Dufaure"

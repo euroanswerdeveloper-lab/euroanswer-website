@@ -30,7 +30,7 @@ facts:
   - label: "Operational incidents"
     value: "Max. 3 per month"
   - label: "Delivery"
-    value: "Romania (Bucharest, Galati) and Skopje"
+    value: "Romania and North Macedonia"
 wpId: 1532
 ---
 Our journey with this client began at their launch and continued through their growth phase, making us a reliable collaborator at every stage. Our strategic approach and continuous support allow us to deliver innovative, interactive customer experiences for today’s fast-paced financial market.
